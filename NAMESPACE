@@ -1,0 +1,8 @@
+import("partykit")
+
+useDynLib("evtree")
+
+export(
+  "evtree",
+  "evtree.control"
+)

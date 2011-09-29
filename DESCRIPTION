@@ -1,0 +1,34 @@
+Package: evtree
+Title: Evolutionary Learning of Globally Optimal Trees
+Version: 0.1-0
+Date: 2011-09-29
+Authors@R: c(person(given = "Thomas", family = "Grubinger", role =
+        c("aut", "cre"), email = "Thomas.Grubinger@i-med.ac.at"),
+        person(given = "Achim", family = "Zeileis", role = "aut", email
+        = "Achim.Zeileis@R-project.org"), person(given = "Karl-Peter",
+        family = "Pfeiffer", role = "aut", email =
+        "Karl-Peter.Pfeiffer@i-med.ac.at"))
+Author: Thomas Grubinger [aut, cre], Achim Zeileis [aut], Karl-Peter
+        Pfeiffer [aut]
+Maintainer: Thomas Grubinger <Thomas.Grubinger@i-med.ac.at>
+Description: Commonly used classification and regression tree methods
+        like the CART algorithm are recursive partitioning methods that
+        build the model in a forward stepwise search.  Although this
+        approach is known to be an efficient heuristic, the results of
+        recursive tree methods are only locally optimal, as splits are
+        chosen to maximize homogeneity at the next step only. An
+        alternative way to search over the parameter space of trees is
+        to use global optimization methods like evolutionary
+        algorithms. The evtree package implements an evolutionary
+        algorithm for learning globally optimal classification and
+        regression trees in R. CPU and memory-intensive tasks are fully
+        computed in C++ while the partykit package is leveraged to
+        represent the resulting trees in R, providing unified
+        infrastructure for summaries, visualizations, and predictions.
+Depends: R (>= 2.11.0), partykit
+Suggests: mlbench, kernlab, multcomp, rpart, party, xtable
+LazyData: yes
+License: GPL-2
+Packaged: 2011-09-30 12:44:52 UTC; zeileis
+Repository: CRAN
+Date/Publication: 2011-09-30 15:47:44
