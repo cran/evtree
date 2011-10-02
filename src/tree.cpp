@@ -33,7 +33,7 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int *s
 } // end Tree
 
 
-Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* maxCat, variable** variables, int* maxNode, int* minbucket, int* minsplit){
+Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* maxCat, variable** variables, int* maxNode, int* minBucket, int* minSplit){
          // initializes a tree with a random root node
         this->nInstances = nInstances;
         this->nVariables = nVariables;
@@ -73,7 +73,7 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* m
               this->randomizeCategories(0);
         }
         
-        for(int i = 0; i <= 5000 && this->predictClass(*minbucket, *minsplit, false, 0) == false; i++){
+        for(int i = 0; i <= 5000 && this->predictClass(*minBucket, *minSplit, false, 0) == false; i++){
 	         this->splitV[0] = (rand()%(*this->nVariables-1));
              	 if(variables[this->splitV[0]]->isCat == false){
                 	 if((this->variables[this->splitV[0]]->nCats-1) > 1 )
@@ -150,7 +150,7 @@ this->data, this->nInstances, this->nVariables, this->variables);
 } // end initNode
 
 
-int Tree::predictClass(int minbucket, int minsplit, bool pruneIfInvalid, int nodeNumber){
+int Tree::predictClass(int minBucket, int minSplit, bool pruneIfInvalid, int nodeNumber){
     // calculate predictions
     // if pruneIfInvalid == TRUE non-valid nodes a pruned
     // otherwise -1 is returned for non-valid nodes
@@ -162,14 +162,14 @@ int Tree::predictClass(int minbucket, int minsplit, bool pruneIfInvalid, int nod
         this->reverseClassification(nodeNumber, nodeNumber);
     }
 
-    int returnValue = this->nodes[nodeNumber]->partition( this->classification, this->weights, this->variables, &this->nNodes, minbucket, minsplit);
+    int returnValue = this->nodes[nodeNumber]->partition( this->classification, this->weights, this->variables, &this->nNodes, minBucket, minSplit);
     if(returnValue == -1){
         return -1;
     }else if(returnValue <= 0 || pruneIfInvalid == false){
         return returnValue;
     }else{
        this->deleteChildNodes(returnValue); // call recursion delete node and everything below it
-       return predictClass(minbucket, minsplit, true, 0);
+       return predictClass(minBucket, minSplit, true, 0);
     }
 } // end  predictClass
 

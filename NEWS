@@ -1,3 +1,9 @@
+Changes in Version 0.1-1
+
+  o CRAN checks turned up problems in C++ code on Fedora and Solaris.
+    These are fixed now.
+
+
 Changes in Version 0.1-0
 
   o First CRAN release.

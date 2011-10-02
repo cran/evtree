@@ -21,9 +21,9 @@ class Tree{
 
 	 public:
 	 Tree(int* nInst, int* nVariables, double** data, int* weights, int *splitV, double *splitP, int** csplit, int* maxCat, int* nNodes, variable** variables, int* maxNode);
-	 Tree(int* nInst, int* nVariables, double** data, int* weights, int* maxCat, variable** variables, int* maxNode, int* minbucket, int* minsplit);
+	 Tree(int* nInst, int* nVariables, double** data, int* weights, int* maxCat, variable** variables, int* maxNode, int* minBucket, int* minSplit);
          ~Tree();
- 	 int predictClass(int minbucket, int minsplit, bool crossover, int nodeNumber);
+ 	 int predictClass(int minBucket, int minSplit, bool crossover, int nodeNumber);
 	 void initNode(int nodeNo);
  	 double calculateTotalMC(int nodeNumber);
          bool calculateTotalCosts(int method, double alpha, int sumWeights, double populationMSE);

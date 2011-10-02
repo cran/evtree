@@ -1,51 +1,51 @@
 #include "container.h"
 
+extern "C"{
 static Container* container;
 
-extern "C"{
-void tree(int* nInst, int* nVar, int *varType, double* ndata, int* weights, int* prediction, int *splitV, double *splitP, int* csplit, int* maxNode, int* minbucket, int* minsplit, int* nIter, int* nTrees, int* pMutateMajor, int* pMutateMinor,int *pCrossover, int *pSplit, int *pPrune, int* method, double* alpha, int* seed){
-	container = new Container(nInst, nVar, varType, ndata, weights, prediction, splitV, splitP, csplit, maxNode, minbucket, minsplit, nIter,nTrees, pMutateMajor, pMutateMinor, pCrossover, pSplit, pPrune, method, alpha, seed);
+void tree(int* nInst, int* nVar, int *varType, double* nData, int* weights, int* prediction, int *splitV, double *splitP, int* csplit, int* maxNode, int* minBucket, int* minSplit, int* nIterations, int* nTrees, int* pMutateMajor, int* pMutateMinor, int *pCrossover, int *pSplit, int *pPrune, int* method, double* alpha, int* seed){
+	container = new Container(nInst, nVar, varType, nData, weights, prediction, splitV, splitP, csplit, maxNode, minBucket, minSplit, nIterations, nTrees, pMutateMajor, pMutateMinor, pCrossover, pSplit, pPrune, method, alpha, seed);
 }//tree
 
 void freememory(void){
     delete container;
     container = NULL;
 }// cleanup
-}//extern C 
+}//extern "C"
 
 static void chkIntFn(void *dummy) {
      R_CheckUserInterrupt();
 }
 
 bool Container::checkInterrupt(void){
-  return (R_ToplevelExec(chkIntFn, NULL) == FALSE);
+  void *temp = NULL;
+  return (R_ToplevelExec(chkIntFn, temp) == FALSE);
 }
 
-Container::Container(int* nInstances, int* nVariables, int *varType, double* ndata, int* weights, int* prediction, int *splitV, double *splitP, int* csplit, int* maxNode, int *minbucket,int* minsplit, int* nIter, int* nTrees, int* pMutateMajor, int* pMutateMinor, int* pCrossover, int* pSplit, int* pPrune, int* method, double* alpha, int* seed ){
+Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, double* R_nData, int* R_weights, int* R_prediction, int *R_splitV, double *R_splitP, int* R_csplit, int* R_maxNode, int *R_minBucket, int* R_minSplit, int* R_nIterations, int* R_nTrees, int* R_pMutateMajor, int* R_pMutateMinor, int* R_pCrossover, int* R_pSplit, int* R_pPrune, int* R_method, double* R_alpha, int* R_seed ){
     // constructor
-    if(*seed < 0)
-	    *seed = (unsigned)time(0);
-    srand(*seed);
-    this->maxNode = *maxNode;
-    this->minsplit = *minsplit;
-    this->nTrees = *nTrees;
-    this->nInstances = *nInstances;
-    this->nIterations = *nIter;
-    this->nVariables = *nVariables;
-    this->minbucket = *minbucket;
-    this->minsplit = *minsplit;
+    if(*R_seed < 0)
+	    *R_seed = (unsigned)time(0);
+    srand(*R_seed);
+    this->maxNode = *R_maxNode;
+    this->minSplit = *R_minSplit;
+    this->nTrees = *R_nTrees;
+    this->nInstances = *R_nInstances;
+    this->nIterations = *R_nIterations;
+    this->nVariables = *R_nVariables;
+    this->minBucket = *R_minBucket;
     this->variables = new variable*[this->nVariables];
     this->data = new double*[this->nInstances];
     this->weights = new int[this->nInstances];
     this->performanceHistory = new double[50];
-    this->probMutateMajor = *pMutateMajor;
-    this->probMutateMinor = *pMutateMinor + this->probMutateMajor;
-    this->probSplit = *pSplit + this->probMutateMinor;
-    this->probPrune = *pPrune + this->probSplit;
-    this->probCrossover = *pCrossover + this->probPrune;
+    this->probMutateMajor = *R_pMutateMajor;
+    this->probMutateMinor = *R_pMutateMinor + this->probMutateMajor;
+    this->probSplit = *R_pSplit + this->probMutateMinor;
+    this->probPrune = *R_pPrune + this->probSplit;
+    this->probCrossover = *R_pCrossover + this->probPrune;
     this->elitismRange = max((int)ceil((double)(this->nTrees/20.0)),2);
     this->nTrees +=  this->elitismRange;
-    this->method = *method;
+    this->method = *R_method;
     this->elitismList = new int[this->elitismRange];
 
     for(int i = 0; i < this->elitismRange; i++)
@@ -55,12 +55,12 @@ Container::Container(int* nInstances, int* nVariables, int *varType, double* nda
     this->sumWeights = 0;
     for (int i = 0; i < this->nInstances; i++){
         this->data[i] = new double[this->nVariables];
-        this->weights[i] = weights[i];
+        this->weights[i] = R_weights[i];
         sumWeights += this->weights[i];
     }
     for(int v = 0; v < this->nVariables; v++){
         for(int i = 0; i < this->nInstances; i++){
-            data[i][v] = ndata[v*this->nInstances+i];
+            data[i][v] = R_nData[v*this->nInstances+i];
         }
     }
     // calculate variance of the dependend variable for regression trees
@@ -80,18 +80,18 @@ Container::Container(int* nInstances, int* nVariables, int *varType, double* nda
     for(int i = 0; i < 50; i++){
         this->performanceHistory[i] = 999999999;
     }
-    this->initVariables(varType);
+    this->initVariables(R_varType);
 
     this->maxCat = 1;
     for(int i = 0; i < (this->nVariables-1); i++)
-        if( varType[i] < -this->maxCat )
-            this->maxCat = -varType[i];
+        if( R_varType[i] < -this->maxCat )
+            this->maxCat = -R_varType[i];
 
-    this->alpha = (*alpha);
+    this->alpha = (*R_alpha);
     this->trees = new Tree*[this->nTrees];
 
     for(int i = 0; i < this->nTrees; i++){
-        this->trees[i] = new Tree(&this->nInstances, &this->nVariables, this->data, this->weights, &this->maxCat, this->variables, &this->maxNode, &this->minbucket, &this->minsplit);
+        this->trees[i] = new Tree(&this->nInstances, &this->nVariables, this->data, this->weights, &this->maxCat, this->variables, &this->maxNode, &this->minBucket, &this->minSplit);
     }
 
     bool allTreesInitialized = TRUE;
@@ -109,35 +109,35 @@ Container::Container(int* nInstances, int* nVariables, int *varType, double* nda
     	// write the information of the best tree into the variables passed from R
          if(succ == true){
    	 	if(this->elitismList[0] < this->nTrees){
-              		*nIter = this->nIterations;
+              		*R_nIterations = this->nIterations;
        	      		for(int i = 0; i < *this->trees[this->elitismList[0]]->maxNode; i++){
 		              if(this->trees[this->elitismList[0]]->splitV[i] >= 0 ){
-            			   splitV[i] = this->trees[this->elitismList[0]]->splitV[i]+1;
-			           splitP[i] = this->trees[this->elitismList[0]]->splitP[i];
+            			   R_splitV[i] = this->trees[this->elitismList[0]]->splitV[i]+1;
+			           R_splitP[i] = this->trees[this->elitismList[0]]->splitP[i];
 
                 	    	   for(int k = 0; k < this->maxCat; k++){
                			 	if( variables[*this->trees[this->elitismList[0]]->nodes[i]->splitV]->isCat == true
 	           			 && k < variables[*this->trees[this->elitismList[0]]->nodes[i]->splitV]->nCats ){
-        	                	 	csplit[i* this->maxCat + k] = this->trees[this->elitismList[0]]->csplit[k][i];
+        	                	 	R_csplit[i* this->maxCat + k] = this->trees[this->elitismList[0]]->csplit[k][i];
                 	   		}else if(this->maxCat > 1){
-                        			csplit[i* this->maxCat + k] = 2;
+                        			R_csplit[i* this->maxCat + k] = 2;
                          		}
                     	    	   }
              		      }else{
-		                      splitV[i] = -999999;
-        	   		      splitP[i] = -999999;
+		                      R_splitV[i] = -999999;
+        	   		      R_splitP[i] = -999999;
 
                 		       // if there is only one independend variabe, and the variable is numeric, csplit
 		            	       // is not a vector. in this cas csplit is not used.
 			      	       if(this->maxCat > 1){
 		               	       	      for(int k = 0; k < this->maxCat; k++){
-                			             csplit[i * this->maxCat + k] = 2;
+                			             R_csplit[i * this->maxCat + k] = 2;
 		                	     }
                 	      		}
               		      }
            		}
            	 	for(int i = 0; i < this->nInstances; i++){
-                       		prediction[i] = this->trees[this->elitismList[0]]->classification[i];
+                       		R_prediction[i] = this->trees[this->elitismList[0]]->classification[i];
                  	}
        	    } // if elitism
        } // if succ
@@ -147,21 +147,17 @@ Container::Container(int* nInstances, int* nVariables, int *varType, double* nda
 
 bool Container::evolution(){
     // evolves the initial solution
-    double evalValue; // stores the return value from variation operators
+
     int randomNumber = 0; // random number calculated for each tree in each iteration. used for operator selection
     bool elitismFlag = false;
     for(int i = 0; i < this->nIterations; i++){
-        // checks for user interupts via control-c
-        
-      // your code somewhere ...
+
+	//check for user interrupts
 	if (checkInterrupt()) { 
-	// user interrupted ... 
 		return false;
 	}
         
-        
-        R_CheckUserInterrupt();
-        for(int j = 0; j < nTrees; j++){
+        for(int j = 0; j < this->nTrees; j++){
             // check if tree j is in the elitism list
             // if it is; with a small probability a copy of tree j is placed in the population
             if(i > 10 && this->elitismList[this->elitismRange-1] < this->nTrees){
@@ -187,15 +183,15 @@ bool Container::evolution(){
            if(elitismFlag == false){
                randomNumber= (rand()%100);
               if(randomNumber < this->probMutateMajor){
-                     evalValue = this->initMutateNode(j, false);
+                     this->initMutateNode(j, false);
               }else if(randomNumber < this->probMutateMinor){
-                     evalValue = this->initMutateNode(j, true); 
+                     this->initMutateNode(j, true); 
               }else if(randomNumber < this->probSplit){
-                     evalValue = this->splitNode(j);
+                     this->splitNode(j);
               }else if(randomNumber < this->probPrune){
-                    evalValue = this->pruneNode(j);
+                     this->pruneNode(j);
               }else{
-                    evalValue = this->crossover(j);            
+         	     this->crossover(j);            
               }
                // if j belongs in the elitism list an extra copy is made replacing a random tree
                if( i > 10){
@@ -249,7 +245,7 @@ double Container::pruneNode(int treeNumber){
                     this->trees[treeNumber]->splitV[nodeNumber*2+2] < 0)
                 flag = true;
 	}
-        int parent= (int) floor((nodeNumber-1)/2) ;
+        int parent= (int) floorf((nodeNumber-1)/2) ;
         if(flag == false || parent < 0)
             return -1;
 
@@ -284,9 +280,9 @@ double Container::pruneNode(int treeNumber){
         }else if(accept == -1){ // reverse prune due to performance reasons
             this->trees[treeNumber]->nNodes++;
             if(nodeNumber%2 == 0 ) {// add Child back to parent
-                    this->trees[treeNumber]->nodes[(int) floor((nodeNumber-1) / 2)]->rightChild = this->trees[treeNumber]->nodes[nodeNumber];
+                    this->trees[treeNumber]->nodes[(int) floorf((nodeNumber-1) / 2)]->rightChild = this->trees[treeNumber]->nodes[nodeNumber];
             }else{
-                    this->trees[treeNumber]->nodes[(int) floor((nodeNumber-1) / 2)]->leftChild = this->trees[treeNumber]->nodes[nodeNumber];
+                    this->trees[treeNumber]->nodes[(int) floorf((nodeNumber-1) / 2)]->leftChild = this->trees[treeNumber]->nodes[nodeNumber];
             }
             this->trees[treeNumber]->splitV[nodeNumber] = oldSplitV;
             this->trees[treeNumber]->splitP[nodeNumber] = oldSplitP;
@@ -299,7 +295,7 @@ double Container::pruneNode(int treeNumber){
 	}else{
             // cout << "warning: invalid tree is replaced by a random tree (4) " << endl;
             this->overwriteTree(treeNumber);
-            return -2;
+            return -2; 
         }
 
     }else return -4;
@@ -315,7 +311,7 @@ int Container::pruneAllNodes(int treeNumber){
     oldPerformance = this->trees[treeNumber]->performance;
         if(this->trees[treeNumber]->nNodes > 2){
             for(int nodeNumber = 1; nodeNumber < this->maxNode; nodeNumber++){
-                int parent = (int) floor((nodeNumber-1)/2);
+                int parent = (int) floorf((nodeNumber-1)/2);
                 if( this->trees[treeNumber]->splitV[nodeNumber] >= 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+1] < 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+2] < 0 && parent >= 0){
@@ -408,11 +404,11 @@ double Container::splitNode(int treeNumber){
                         }
 
                         if(terminalNode % 2 == 0 ){ // add child to parent
-                                this->trees[treeNumber]->nodes[(int) floor((terminalNode-1)/2) ]->rightChild = this->trees[treeNumber]->nodes[terminalNode];
+                                this->trees[treeNumber]->nodes[(int) floorf((terminalNode-1)/2) ]->rightChild = this->trees[treeNumber]->nodes[terminalNode];
                         }else{
-                                this->trees[treeNumber]->nodes[(int) floor((terminalNode-1)/2) ]->leftChild = this->trees[treeNumber]->nodes[terminalNode];
+                                this->trees[treeNumber]->nodes[(int) floorf((terminalNode-1)/2) ]->leftChild = this->trees[treeNumber]->nodes[terminalNode];
                         }
-                        flagValid = this->evaluateTree(treeNumber, false, (int) floor((terminalNode-1)/2) ) ;
+                        flagValid = this->evaluateTree(treeNumber, false, (int) floorf((terminalNode-1)/2) ) ;
                     }
                 }
             }
@@ -428,7 +424,7 @@ double Container::splitNode(int treeNumber){
                }else{
                       this->trees[treeNumber]->splitV[terminalNode] = -999999;
                }
-               if(this->evaluateTree(treeNumber, false , (int) floor((terminalNode - 1) / 2) ) == false) {
+               if(this->evaluateTree(treeNumber, false , (int) floorf((terminalNode - 1) / 2) ) == false) {
                       // cout << "warning: invalid tree is replaced by a random tree (10) " << endl;
                       this->overwriteTree(treeNumber);
                       return -10;
@@ -488,7 +484,7 @@ int Container::randomTerminalNode(int treeNumber){
     }
     for( int i = 0; flag == false && i < 101; i++){
         randomNode= rand()%j;
-        if( trees[treeNumber]->nodes[(int) ((nodes[randomNode]-1)/2)]->sumLocalWeights > this->minsplit){
+        if( trees[treeNumber]->nodes[(int) ((nodes[randomNode]-1)/2)]->sumLocalWeights > this->minSplit){
             flag = true;
         }
     }
@@ -564,7 +560,7 @@ double Container::mutateNode(int treeNumber, int nodeNumber, bool isMinorChange)
                 }
             }
         }
-        returnValue = this->trees[treeNumber]->predictClass(this->minbucket, this->minsplit, false,  nodeNumber) ;
+        returnValue = this->trees[treeNumber]->predictClass(this->minBucket, this->minSplit, false,  nodeNumber) ;
         if(returnValue == 0 || returnValue == nodeNumber){  // reverse mutation
             this->trees[treeNumber]->splitV[nodeNumber] = oldSplitV;
             this->trees[treeNumber]->splitP[nodeNumber] = oldSplitP;
@@ -778,11 +774,11 @@ bool Container::randomSplitPoint(int treeNumber, int nodeNumber){
 
         int localInstances = 0;
         if(nodeNumber%2 == 0 ){ // add Child to parent and remove number of terminal instances
-             localInstances = this->trees[treeNumber]->nodes[(int) floor((nodeNumber-1)/2) ]->sumRightLocalWeights;
+             localInstances = this->trees[treeNumber]->nodes[(int) floorf((nodeNumber-1)/2) ]->sumRightLocalWeights;
         }else{
-             localInstances = this->trees[treeNumber]->nodes[(int) floor((nodeNumber-1)/2) ]->sumLeftLocalWeights;
+             localInstances = this->trees[treeNumber]->nodes[(int) floorf((nodeNumber-1)/2) ]->sumLeftLocalWeights;
         }
-        if(localInstances < this->minsplit)
+        if(localInstances < this->minSplit)
             return false;
 
         double min = 1;
@@ -867,7 +863,7 @@ int Container::randomSplitNode(int treeNumber){
 
 bool Container::evaluateTree(int treeNumber, bool pruneIfInvalid, int nodeNumber){
         // calculate predictions and check tree validity
-	if( this->trees[treeNumber]->predictClass( this->minbucket, this->minsplit, pruneIfInvalid, nodeNumber ) != -1){
+	if( this->trees[treeNumber]->predictClass( this->minBucket, this->minSplit, pruneIfInvalid, nodeNumber ) != -1){
             return false;
 	}else{
             int found = 0;
@@ -876,13 +872,13 @@ bool Container::evaluateTree(int treeNumber, bool pruneIfInvalid, int nodeNumber
                     found++;                                  
                     if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights == 0 &&  this->trees[treeNumber]->nodes[i]->sumRightLocalWeights == 0){
                    ;
-                    }else if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights >= this->minbucket &&  this->trees[treeNumber]->splitV[i*2+2] >= 0){
+                    }else if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights >= this->minBucket &&  this->trees[treeNumber]->splitV[i*2+2] >= 0){
                     ;
-                    }else if(this->trees[treeNumber]->nodes[i]->sumRightLocalWeights >= this->minbucket  &&  this->trees[treeNumber]->splitV[i*2+1] >= 0){
+                    }else if(this->trees[treeNumber]->nodes[i]->sumRightLocalWeights >= this->minBucket  &&  this->trees[treeNumber]->splitV[i*2+1] >= 0){
                     ;
-                    }else if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights <  this->minbucket
-                            ||  this->trees[treeNumber]->nodes[i]->sumRightLocalWeights < this->minbucket
-                            ||  this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights + this->trees[treeNumber]->nodes[i]->sumRightLocalWeights < this->minsplit ){
+                    }else if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights <  this->minBucket
+                            ||  this->trees[treeNumber]->nodes[i]->sumRightLocalWeights < this->minBucket
+                            ||  this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights + this->trees[treeNumber]->nodes[i]->sumRightLocalWeights < this->minSplit ){
                         return false;
                     }
                 }
@@ -1026,16 +1022,16 @@ double Container::crossover(int treeNumber1){
         int depthOfRandomNode = 0;
         bool flag = false;
         while(flag == false){
-            if(randomNode1  >= pow(2,depthOfRandomNode+1)-1){  //smaller leftmost node of tree
+            if(randomNode1  >= pow((float)2,depthOfRandomNode+1)-1){  //smaller leftmost node of tree
                    depthOfRandomNode++;
             }else{
                    flag = true;
             }
         }
-	int randomNode2 = (rand()%((int)pow(2,depthOfRandomNode+1) - (int)pow(2,depthOfRandomNode))) + (int)pow(2,depthOfRandomNode)-1;
+	int randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode+1) - (int)pow((float)2,depthOfRandomNode))) + (int)pow((float)2,depthOfRandomNode)-1;
         i = 0;
         while(this->trees[ treeNumber2 ]->splitV[randomNode2] < 0 && i <= 30){
-            randomNode2 = (rand()%((int)pow(2,depthOfRandomNode+1)-(int)pow(2,depthOfRandomNode))) + (int)pow(2,depthOfRandomNode)-1;
+            randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode+1)-(int)pow((float)2,depthOfRandomNode))) + (int)pow((float)2,depthOfRandomNode)-1;
             i++;
         }
         if(i >= 30)

@@ -25,7 +25,7 @@ int* nInst, int* nVar, variable** variables){
 } // end Node
 
 
-int Node::partition( int* classification, int* weights, variable** variables, int* nNodes, int minbucket, int minsplit ){
+int Node::partition( int* classification, int* weights, variable** variables, int* nNodes, int minBucket, int minSplit ){
     // assigns instances to belong to the right or the left child node
     for(int i = 0; i < *this->nInst; i++)
             this->localClassification[i] = classification[i];
@@ -69,17 +69,17 @@ int Node::partition( int* classification, int* weights, variable** variables, in
 
     }
     this->sumLocalWeights = this->sumLeftLocalWeights + this->sumRightLocalWeights ;
-    if( this->sumLocalWeights < minsplit  && this->pos > 0){  // checks if there are enough instances in the nodes; otherwise the node is pruned
+    if( this->sumLocalWeights < minSplit  && this->pos > 0){  // checks if there are enough instances in the nodes; otherwise the node is pruned
         return (int) this->pos;
     }
 
     // recursive call of partition until there are no further internal nodes
     int temp1 = -1, temp2 = -1;
     if( this->leftChild != NULL){
-       temp1 = this->leftChild->partition(classification, weights, variables, nNodes, minbucket, minsplit);
+       temp1 = this->leftChild->partition(classification, weights, variables, nNodes, minBucket, minSplit);
     }
     if( this->rightChild != NULL){
-       temp2 = this->rightChild->partition(classification, weights, variables, nNodes, minbucket, minsplit);
+       temp2 = this->rightChild->partition(classification, weights, variables, nNodes, minBucket, minSplit);
     }
 
     if( temp1 == -2 || temp2 == -2){
@@ -92,13 +92,13 @@ int Node::partition( int* classification, int* weights, variable** variables, in
         return temp2;
     }
 
-    if(this->sumLeftLocalWeights < minbucket){   // if there are to few instances in the left terminal-node the internal node is pruned
+    if(this->sumLeftLocalWeights < minBucket){   // if there are to few instances in the left terminal-node the internal node is pruned
         return this->pos;
-    }else if(this->sumRightLocalWeights < minbucket){ // if there are to few instances in the right terminal-node the internal node is pruned
+    }else if(this->sumRightLocalWeights < minBucket){ // if there are to few instances in the right terminal-node the internal node is pruned
         return this->pos;
     }
     return -1;
-} // end partition
+} // end partition 
 
 
 double Node::calculateNodeMC(int* weights){

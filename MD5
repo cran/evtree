@@ -1,6 +1,6 @@
-cc23c46aec06e4764b21748defddf2d8 *DESCRIPTION
+92dd1518c375009c37581ef0909e9bdf *DESCRIPTION
 e414b7ca34d510a30d1a0b6ef3ad005a *NAMESPACE
-1d3dfb25c8c3cfeaac05daeef3944055 *NEWS
+c16ce692eb3fd3877b66c92cf19f5d1c *NEWS
 9b5f90969de48eebc7bf7184e4091785 *R/evtree-internal.R
 24c59483a8ac8c057f6dca388fcbdb91 *R/evtree.R
 4e6f46f1238709273d46630fc8720b04 *R/evtree.control.R
@@ -14,7 +14,7 @@ e126e2812c50a8cdfbdc0b5e124d7a96 *data/ContraceptiveChoice.RData
 87a92f342a5a42b265ce45beaa02ee54 *data/StatlogHeart.RData
 fb86450c0602cd051fd8bed018d3f7bb *inst/doc/evtree.Rnw
 5b91632534340ec86cfbe2c79331a043 *inst/doc/evtree.bib
-fb21d372f38791e941f70026ae48056a *inst/doc/evtree.pdf
+590c18ae58032f33576104214dffe5ee *inst/doc/evtree.pdf
 3042558395b6cdf0922c989cfb0410b0 *inst/doc/results/bostonhousing.RData
 05f772f68b767a1dd15c22348d0a0d20 *inst/doc/results/breastcancer.RData
 aa9194c110ee5e70f0cb9a109f87e726 *inst/doc/results/chessboard44_0.RData
@@ -42,11 +42,11 @@ fe706f61caf8be7d2153dcd254d8021b *man/MAGICGammaTelescope.Rd
 00775811909c1ecf1a45192313e0a647 *man/StatlogHeart.Rd
 ca028a3482e96bc3b862ff8629beb8ae *man/evtree.Rd
 02a062b31be4c53ec7ad8e5091576b2b *man/evtree.control.Rd
-c858022268e18f568f84fdfab2921c8b *src/container.cpp
-d38d4e956aec208252b29ba39e113f1e *src/container.h
-9c435b7a174a7dfc2626d30492057031 *src/node.cpp
+6a7d654f575adcaa6a0e307fcbef5cb3 *src/container.cpp
+d15b90ee0150cbad809119f5ce2a09b4 *src/container.h
+cc287cdae1661acfb982d2347417e194 *src/node.cpp
 fa63910222cec01d9106609678289e7c *src/node.h
-3ce2532ed96089ee903b854b977fee9d *src/tree.cpp
-5af599919cdafb40a2e7f0e6a2c969b2 *src/tree.h
+fac4684d0022374c1cdff49e3c7ac3f3 *src/tree.cpp
+7d0114023c73d1b79a40661fd9675947 *src/tree.h
 7b784c2b08969dab49aee2e1d047597d *src/variable.cpp
 c7497c3eaffa7afa1d30f71d80846ef6 *src/variable.h
