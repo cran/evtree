@@ -1,0 +1,253 @@
+
+> options(prompt = "R> ", continue = "+  ", width = 70, 
++     useFancyQuotes = FALSE)
+
+> library("rpart")
+
+> library("evtree")
+Loading required package: partykit
+Loading required package: grid
+
+> data("BBBClub", package = "evtree")
+
+> cache <- FALSE
+
+> X1 <- rep(seq(0.25, 1.75, 0.5), each = 4)
+
+> X2 <- rep(seq(0.25, 1.75, 0.5), 4)
+
+> Y <- rep(1, 16)
+
+> Y[(X1 < 1 & X2 < 1) | (X1 > 1 & X2 > 1)] <- 2
+
+> Y <- factor(Y, labels = c("O", "X"))
+
+> chess22 <- data.frame(Y, X1, X2)
+
+> set.seed(1090)
+
+> print(evtree(Y ~ ., data = chess22, minbucket = 1, 
++     minsplit = 2))
+
+Model formula:
+Y ~ X1 + X2
+
+Fitted party:
+[1] root
+|   [2] X1 < 1.25
+|   |   [3] X2 < 1.25: X (n = 4, err = 0.0%)
+|   |   [4] X2 >= 1.25: O (n = 4, err = 0.0%)
+|   [5] X1 >= 1.25
+|   |   [6] X2 < 1.25: O (n = 4, err = 0.0%)
+|   |   [7] X2 >= 1.25: X (n = 4, err = 0.0%)
+
+Number of inner nodes:    3
+Number of terminal nodes: 4
+
+> plot(X2 ~ X1, data = chess22, xlim = c(0, 2), ylim = c(0, 
++     2), pch = c(1, 4)[Y], col = c("black", "slategray")[Y])
+
+> if (cache & file.exists("BBBClub-trees.rda")) {
++     load("BBBClub-trees.rda")
++ } else {
++     data("BBBClub", package = "evtree")
++     library(" ..." ... [TRUNCATED] 
+Loading required package: Formula
+
+> plot(rp)
+
+> plot(ct)
+
+> plot(ev)
+
+> ev
+
+Model formula:
+choice ~ gender + amount + freq + last + first + child + youth + 
+    cook + diy + art
+
+Fitted party:
+[1] root
+|   [2] first < 12
+|   |   [3] art < 1: no (n = 250, err = 30.8%)
+|   |   [4] art >= 1: yes (n = 69, err = 30.4%)
+|   [5] first >= 12
+|   |   [6] art < 2: no (n = 864, err = 21.8%)
+|   |   [7] art >= 2: yes (n = 117, err = 25.6%)
+
+Number of inner nodes:    3
+Number of terminal nodes: 4
+
+> plot(ev)
+
+> mc <- function(obj) 1 - mean(predict(obj) == BBBClub$choice)
+
+> evalfun <- function(obj) 2 * nrow(BBBClub) * mc(obj) + 
++     width(obj) * log(nrow(BBBClub))
+
+> trees <- list(evtree = ev, rpart = rp, ctree = ct, 
++     rpart2 = rp2, ctree2 = ct2)
+
+> round(sapply(trees, function(obj) c(misclassification = mc(obj), 
++     `evaluation function` = evalfun(obj))), digits = 3)
+                     evtree   rpart   ctree  rpart2  ctree2
+misclassification     0.243   0.238   0.248   0.262   0.255
+evaluation function 660.680 655.851 694.191 701.510 692.680
+
+> ftable(tab <- table(evtree = predict(ev), rpart = predict(rp), 
++     ctree = predict(ct), observed = BBBClub$choice))
+                   observed  no yes
+evtree rpart ctree                 
+no     no    no             799 223
+             yes             38  24
+       yes   no               0   0
+             yes             12  18
+yes    no    no               0   0
+             yes              0   0
+       yes   no              21  19
+             yes             30 116
+
+> sapply(c("evtree", "rpart", "ctree"), function(nam) {
++     mt <- margin.table(tab, c(match(nam, names(dimnames(tab))), 
++         4))
++     c(abs = .... [TRUNCATED] 
+     evtree   rpart   ctree
+abs 186.000 216.000 238.000
+rel  72.581  70.833  66.387
+
+> for (i in Sys.glob("results/*.RData")) load(i)
+
+> preprocess <- function(d, dname = "datasetname", isclassification = TRUE) {
++     if (isclassification) 
++         d[, 1:3] <- 1 - d[, 1:3]
++     d  .... [TRUNCATED] 
+
+> r <- rbind(preprocess(d = rglass, dname = "Glass identification", 
++     isclassification = TRUE), preprocess(d = rheart, dname = "Statlog heart", 
+ .... [TRUNCATED] 
+
+> r$ds <- factor(r$ds)
+
+> r$samp <- factor(r$samp)
+
+> r$dssamp <- r$ds:r$samp
+
+> library("multcomp")
+Loading required package: mvtnorm
+Loading required package: survival
+Loading required package: splines
+
+> cstats <- function(alg = "rpart", value = "accuracy", 
++     data = r) {
++     dlab <- rev(unique(data$ds))
++     k <- length(dlab)
++     mean <- nu .... [TRUNCATED] 
+
+> acc_rpart <- cstats("rpart", "accuracy")
+
+> com_rpart <- cstats("rpart", "complexity")
+
+> acc_ctree <- cstats("ctree", "accuracy")
+
+> com_ctree <- cstats("ctree", "complexity")
+
+> ciplot <- function(x, xlim = NULL, main = "", xlab = "", 
++     ylab = TRUE) {
++     nam <- rownames(x)
++     k <- length(nam)
++     plot(x$mean, 1: .... [TRUNCATED] 
+
+> par(mfrow = c(2, 2), oma = c(5, 10, 2, 0), mar = c(1, 
++     1, 2, 1))
+
+> xlim1 <- range(cbind(acc_rpart, acc_ctree))
+
+> xlim2 <- range(cbind(com_rpart, com_ctree))
+
+> ciplot(acc_rpart, xlim = xlim1, main = "rpart", ylab = TRUE, 
++     xlab = "")
+
+> ciplot(com_rpart, xlim = xlim2, main = "", ylab = FALSE, 
++     xlab = "")
+
+> ciplot(acc_ctree, xlim = xlim1, main = "ctree", ylab = TRUE, 
++     xlab = "relative difference in predictive accuracy (%)")
+
+> ciplot(com_ctree, xlim = xlim2, main = "", ylab = FALSE, 
++     xlab = "relative difference in complexity (%)")
+
+> chessboard44 <- function(n = 4000, noisevariables = 6, 
++     noise = 0) {
++     chess44 <- array(0, c(n, noisevariables + 3))
++     for (i in 1:(no .... [TRUNCATED] 
+
+> chess44 <- chessboard44(2000)
+
+> plot(X2 ~ X1, data = chess44, xlim = c(0, 4), ylim = c(0, 
++     4), pch = c(1, 4)[Y], col = c("black", "slategray")[Y])
+
+> library("xtable")
+
+> load("./results/chessboard44_0.RData")
+
+> load("./results/chessboard44_5.RData")
+
+> load("./results/chessboard44_10.RData")
+
+> chesstable_means <- as.data.frame(rbind(apply(rchessboard44_0, 
++     2, mean), apply(rchessboard44_5, 2, mean), apply(rchessboard44_10, 
++     2, m .... [TRUNCATED] 
+
+> names(chesstable_means) <- c("\\code{evtree}", "\\code{rpart}", 
++     "\\code{ctree}", "\\code{evtree}", "\\code{rpart}", "\\code{ctree}")
+
+> chesstable_means[, 1:3] <- format(chesstable_means[, 
++     1:3] * 100, digits = 1, nsmall = 1)
+
+> chesstable_means[, 4:6] <- format(chesstable_means[, 
++     4:6], digits = 1, nsmall = 1)
+
+> chesstable_sd <- as.data.frame(rbind(apply(rchessboard44_0, 
++     2, sd), apply(rchessboard44_5, 2, sd), apply(rchessboard44_10, 
++     2, sd)))
+
+> names(chesstable_sd) <- c("\\code{evtree}", "\\code{rpart}", 
++     "\\code{ctree}", "\\code{evtree}", "\\code{rpart}", "\\code{ctree}")
+
+> chesstable_sd[, 1:3] <- format(chesstable_sd[, 1:3] * 
++     100, digits = 1, nsmall = 1)
+
+> chesstable_sd[, 4:6] <- format(chesstable_sd[, 4:6], 
++     digits = 1, nsmall = 1)
+
+> chesstable <- chesstable_means
+
+> for (j in 1:ncol(chesstable_means)) {
++     for (i in 1:nrow(chesstable_means)) {
++         chesstable[i, j] <- paste(chesstable_means[i, j], "(", 
+ .... [TRUNCATED] 
+
+> chesstable <- cbind(as.integer(rbind(0, 5, 10)), chesstable)
+
+> colnames(chesstable)[1] = ""
+
+> print(xtable(chesstable, caption = "Mean (and standard deviation) of accuracy and number of terminal nodes for simulated $4 \\times 4$ chessboard ex ..." ... [TRUNCATED] 
+% latex table generated in R 2.15.0 by xtable 1.7-0 package
+% Wed Apr 11 08:27:05 2012
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rllllll}
+  \toprule \multicolumn{1}{l}{Noise (\%)} & \multicolumn{3}{l}{Accuracy}  & \multicolumn{3}{l}{Terminal nodes}\\ & \code{evtree} & \code{rpart} & \code{ctree} & \code{evtree} & \code{rpart} & \code{ctree} \\ 
+  \midrule  0 & 93.2(7.4) & 69.1(18.3) & 49.9(1.1) & 14.4(2.2) & 16.6(8.2) & 1.1(0.3) \\ 
+    5 & 89.0(6.8) & 65.7(17.4) & 50.1(1.6) & 14.4(2.2) & 14.6(8.0) & 1.1(0.7) \\ 
+   10 & 84.5(5.6) & 62.8(14.1) & 50.1(1.3) & 14.6(2.0) & 14.3(7.3) & 1.1(0.4) \\ 
+   \bottomrule\end{tabular}
+\caption{Mean (and standard deviation) of accuracy and number of terminal nodes for simulated $4 \times 4$ chessboard examples.}
+\label{tab:resultsChessboard}
+\end{center}
+\end{table}
+
+ *** Run successfully completed ***
+> proc.time()
+   user  system elapsed 
+ 31.025   0.100  31.172 

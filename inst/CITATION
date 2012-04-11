@@ -1,0 +1,23 @@
+citHeader("To cite evtree in publications use")
+
+citEntry(entry = "TechReport",
+  title        = "{evtree}: Evolutionary Learning of Globally Optimal Classification and Regression Trees in {R}",
+  author       = personList(as.person("Thomas Grubinger"), 
+		   as.person("Achim Zeileis"),
+		   as.person("Karl-Peter Pfeiffer")),
+  institution  = "Working Papers in Economics and Statistics, Research Platform Empirical
+  		  and Experimental Economics, Universit\\\"at Innsbruck",
+  year         = "2011",
+  type         = "Working Paper",
+  number       = "2011-20",
+  month        = "October",
+  url	       = "http://EconPapers.RePEc.org/RePEc:inn:wpaper:2011-20",
+  
+  textVersion  = 
+  paste("Thomas Grubinger, Achim Zeileis, Karl-Peter Pfeiffer (2011).", 
+	"evtree: Evolutionary Learning of Globally Optimal Classification and Regression Trees in R.",
+ 	"Working Paper 2011-20.",
+ 	"Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.",
+	"URL http://EconPapers.RePEc.org/RePEc:inn:wpaper:2011-20")
+)
+

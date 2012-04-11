@@ -1,7 +1,7 @@
 Package: evtree
 Title: Evolutionary Learning of Globally Optimal Trees
-Version: 0.1-1
-Date: 2011-10-02
+Version: 0.1-2
+Date: 2012-04-11
 Authors@R: c(person(given = "Thomas", family = "Grubinger", role =
         c("aut", "cre"), email = "Thomas.Grubinger@i-med.ac.at"),
         person(given = "Achim", family = "Zeileis", role = "aut", email
@@ -29,6 +29,6 @@ Depends: R (>= 2.11.0), partykit
 Suggests: mlbench, kernlab, multcomp, rpart, party, xtable
 LazyData: yes
 License: GPL-2
-Packaged: 2011-10-02 18:20:26 UTC; zeileis
+Packaged: 2012-04-11 11:02:54 UTC; zeileis
 Repository: CRAN
-Date/Publication: 2011-10-02 19:24:26
+Date/Publication: 2012-04-11 12:00:10

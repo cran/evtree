@@ -1,0 +1,442 @@
+
+R version 2.15.0 (2012-03-30)
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "evtree"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('evtree')
+Loading required package: partykit
+Loading required package: grid
+> 
+> assign(".oldSearch", search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("BBBClub")
+> ### * BBBClub
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: BBBClub
+> ### Title: Bookbinder's Book Club
+> ### Aliases: BBBClub
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> ## data, packages, random seed
+> data("BBBClub", package = "evtree")
+> library("rpart")
+> set.seed(1090)
+> 
+> ## learn trees
+> ev <- evtree(choice ~ ., data = BBBClub, minbucket = 10, maxdepth = 2)
+> rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
+> ct <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
+Loading required package: Formula
+> 
+> ## visualization
+> plot(ev)
+> plot(rp)
+> plot(ct)
+> 
+> ## accuracy: misclassification rate
+> mc <- function(obj) 1 - mean(predict(obj) == BBBClub$choice)
+> c("evtree" = mc(ev), "rpart" = mc(rp), "ctree" = mc(ct))
+   evtree     rpart     ctree 
+0.2430769 0.2384615 0.2476923 
+> 
+> ## complexity: number of terminal nodes
+> c("evtree" = width(ev), "rpart" = width(rp), "ctree" = width(ct))
+evtree  rpart  ctree 
+     4      5      7 
+> 
+> ## compare structure of predictions
+> ftable(tab <- table(evtree = predict(ev), rpart  = predict(rp),
++   ctree  = predict(ct), observed = BBBClub$choice))
+                   observed  no yes
+evtree rpart ctree                 
+no     no    no             799 223
+             yes             38  24
+       yes   no               0   0
+             yes             12  18
+yes    no    no               0   0
+             yes              0   0
+       yes   no              21  19
+             yes             30 116
+> 
+> ## compare customer predictions only (absolute, proportion correct)
+> sapply(c("evtree", "rpart", "ctree"), function(nam) {
++   mt <- margin.table(tab, c(match(nam, names(dimnames(tab))), 4))
++   c(abs = as.vector(rowSums(mt))[2],
++     rel = round(100 * prop.table(mt, 1)[2, 2], digits = 3))
++ })
+     evtree   rpart   ctree
+abs 186.000 216.000 238.000
+rel  72.581  70.833  66.387
+> 
+> 
+> 
+> cleanEx()
+
+detaching 'package:Formula', 'package:rpart'
+
+> nameEx("ContraceptiveChoice")
+> ### * ContraceptiveChoice
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ContraceptiveChoice
+> ### Title: Contraceptive Method Choice
+> ### Aliases: ContraceptiveChoice
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data("ContraceptiveChoice")
+> summary(ContraceptiveChoice)
+   wifes_age        wifes_education   husbands_education number_of_children
+ Min.   :16.00   low        :152    low        : 44      Min.   : 0.000    
+ 1st Qu.:26.00   medium-low :334    medium-low :178      1st Qu.: 1.000    
+ Median :32.00   medium-high:410    medium-high:352      Median : 3.000    
+ Mean   :32.54   high       :577    high       :899      Mean   : 3.261    
+ 3rd Qu.:39.00                                           3rd Qu.: 4.000    
+ Max.   :49.00                                           Max.   :16.000    
+   wifes_religion wife_now_working  husbands_occupation
+ non-Islam: 220   no : 369         low        :436     
+ Islam    :1253   yes:1104         medium-low :425     
+                                   medium-high:585     
+                                   high       : 27     
+                                                       
+                                                       
+ standard_of_living_index  media_exposure contraceptive_method_used
+ low        :129          good    :1364   no use    :629           
+ medium-low :229          not good: 109   long-term :333           
+ medium-high:431                          short-term:511           
+ high       :684                                                   
+                                                                   
+                                                                   
+> ## Not run: 
+> ##D contt <- evtree(contraceptive_method_used ~ . , data = ContraceptiveChoice) 
+> ##D contt
+> ##D table(predict(contt), ContraceptiveChoice$contraceptive_method_used)
+> ##D plot(contt)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("GermanCredit")
+> ### * GermanCredit
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: GermanCredit
+> ### Title: Statlog German Credit
+> ### Aliases: GermanCredit
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data("GermanCredit")
+> summary(GermanCredit)
+                                        status       duration   
+ ... < 100 DM                              :274   Min.   : 4.0  
+ 0 <= ... < 200 DM                         :269   1st Qu.:12.0  
+ ... >= 200 DM / salary for at least 1 year: 63   Median :18.0  
+ no checking account                       :394   Mean   :20.9  
+                                                  3rd Qu.:24.0  
+                                                  Max.   :72.0  
+                                                                
+                                     credit_history                purpose   
+ no credits taken/all credits paid back duly: 40    domestic appliances:280  
+ all credits at this bank paid back duly    : 49    car (new)          :234  
+ existing credits paid back duly till now   :530    radio/television   :181  
+ delay in paying off in the past            : 88    car (used)         :103  
+ critical account/other credits existing    :293    others             : 97  
+                                                    retraining         : 50  
+                                                    (Other)            : 55  
+     amount                            savings            employment_duration
+ Min.   :  250   ... < 100 DM              :603   unemployed        : 62     
+ 1st Qu.: 1366   100 <= ... < 500 DM       :103   ... < 1 year      :172     
+ Median : 2320   500 <= ... < 1000 DM      : 63   1 <= ... < 4 years:339     
+ Mean   : 3271   ... >= 1000 DM            : 48   4 <= ... < 7 years:174     
+ 3rd Qu.: 3972   unknown/no savings account:183   ... >= 7 years    :253     
+ Max.   :18424                                                               
+                                                                             
+ installment_rate                          personal_status_sex
+ Min.   :1.000    male : divorced/separated          : 50     
+ 1st Qu.:2.000    female : divorced/separated/married:310     
+ Median :3.000    male : single                      :548     
+ Mean   :2.973    male : married/widowed             : 92     
+ 3rd Qu.:4.000    female : single                    :  0     
+ Max.   :4.000                                                
+                                                              
+      other_debtors present_residence
+ none        :907   Min.   :1.000    
+ co-applicant: 41   1st Qu.:2.000    
+ guarantor   : 52   Median :3.000    
+                    Mean   :2.845    
+                    3rd Qu.:4.000    
+                    Max.   :4.000    
+                                     
+                                              property        age       
+ real estate                                      :282   Min.   :19.00  
+ building society savings agreement/life insurance:232   1st Qu.:27.00  
+ car or other                                     :332   Median :33.00  
+ unknown/no property                              :154   Mean   :35.55  
+                                                         3rd Qu.:42.00  
+                                                         Max.   :75.00  
+                                                                        
+ other_installment_plans     housing    number_credits 
+ bank  :139              rent    :179   Min.   :1.000  
+ stores: 47              own     :713   1st Qu.:1.000  
+ none  :814              for free:108   Median :1.000  
+                                        Mean   :1.407  
+                                        3rd Qu.:2.000  
+                                        Max.   :4.000  
+                                                       
+                                                         job     
+ unemployed/unskilled - non-resident                       : 22  
+ unskilled - resident                                      :200  
+ skilled employee/official                                 :630  
+ management/self-employed/highly qualified employee/officer:148  
+                                                                 
+                                                                 
+                                                                 
+ people_liable   telephone foreign_worker credit_risk
+ Min.   :1.000   no :596   yes:963        good:700   
+ 1st Qu.:1.000   yes:404   no : 37        bad :300   
+ Median :1.000                                       
+ Mean   :1.155                                       
+ 3rd Qu.:1.000                                       
+ Max.   :2.000                                       
+                                                     
+> ## Not run: 
+> ##D gcw <- array(1, nrow(GermanCredit))
+> ##D gcw[GermanCredit$credit_risk == "bad"] <- 5
+> ##D gct <- evtree(credit_risk ~ . , data = GermanCredit, weights = gcw) 
+> ##D gct
+> ##D table(predict(gct), GermanCredit$credit_risk)
+> ##D plot(gct)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("MAGICGammaTelescope")
+> ### * MAGICGammaTelescope
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: MAGICGammaTelescope
+> ### Title: MAGIC Gamma Telescope
+> ### Aliases: MAGICGammaTelescope
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data("MAGICGammaTelescope")
+> summary(MAGICGammaTelescope)
+    fLength            fWidth           fSize           fConc       
+ Min.   :  4.284   Min.   :  0.00   Min.   :1.941   Min.   :0.0131  
+ 1st Qu.: 24.336   1st Qu.: 11.86   1st Qu.:2.477   1st Qu.:0.2358  
+ Median : 37.148   Median : 17.14   Median :2.740   Median :0.3542  
+ Mean   : 53.250   Mean   : 22.18   Mean   :2.825   Mean   :0.3803  
+ 3rd Qu.: 70.122   3rd Qu.: 24.74   3rd Qu.:3.102   3rd Qu.:0.5037  
+ Max.   :334.177   Max.   :256.38   Max.   :5.323   Max.   :0.8930  
+     fConc1           fAsym             fM3Long           fM3Trans        
+ Min.   :0.0003   Min.   :-457.916   Min.   :-331.78   Min.   :-205.8947  
+ 1st Qu.:0.1285   1st Qu.: -20.587   1st Qu.: -12.84   1st Qu.: -10.8494  
+ Median :0.1965   Median :   4.013   Median :  15.31   Median :   0.6662  
+ Mean   :0.2147   Mean   :  -4.332   Mean   :  10.55   Mean   :   0.2497  
+ 3rd Qu.:0.2852   3rd Qu.:  24.064   3rd Qu.:  35.84   3rd Qu.:  10.9464  
+ Max.   :0.6752   Max.   : 575.241   Max.   : 238.32   Max.   : 179.8510  
+     fAlpha           fDist            class      
+ Min.   : 0.000   Min.   :  1.283   gamma :12332  
+ 1st Qu.: 5.548   1st Qu.:142.492   hadron: 6688  
+ Median :17.680   Median :191.851                 
+ Mean   :27.646   Mean   :193.818                 
+ 3rd Qu.:45.884   3rd Qu.:240.564                 
+ Max.   :90.000   Max.   :495.561                 
+> ## Not run: 
+> ##D mgtt <- evtree(class ~ . , data = MAGICGammaTelescope) 
+> ##D mgtt
+> ##D table(predict(mgtt), MAGICGammaTelescope$class)
+> ##D plot(mgtt)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("StatlogHeart")
+> ### * StatlogHeart
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: StatlogHeart
+> ### Title: Statlog Heart
+> ### Aliases: StatlogHeart
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data("StatlogHeart")
+> summary(StatlogHeart)
+      age            sex              chest_pain_type resting_blood_pressure
+ Min.   :29.00   female: 87   typical angina  : 20    Min.   : 94.0         
+ 1st Qu.:48.00   male  :183   atypical angina : 42    1st Qu.:120.0         
+ Median :55.00                non-anginal pain: 79    Median :130.0         
+ Mean   :54.43                asymptomatic    :129    Mean   :131.3         
+ 3rd Qu.:61.00                                        3rd Qu.:140.0         
+ Max.   :77.00                                        Max.   :200.0         
+ serum_colestoral fasting_blood_sugar resting_electrocardiographic_results
+ Min.   :126.0    no :230             0:131                               
+ 1st Qu.:213.0    yes: 40             1:  2                               
+ Median :245.0                        2:137                               
+ Mean   :249.7                                                            
+ 3rd Qu.:280.0                                                            
+ Max.   :564.0                                                            
+ maximum_heart_rate exercise_induced_angina    oldpeak       slope_of_the_peak
+ Min.   : 71.0      no :181                 Min.   :0.00   upsloping  :130    
+ 1st Qu.:133.0      yes: 89                 1st Qu.:0.00   flat       :122    
+ Median :153.5                              Median :0.80   downsloping: 18    
+ Mean   :149.7                              Mean   :1.05                      
+ 3rd Qu.:166.0                              3rd Qu.:1.60                      
+ Max.   :202.0                              Max.   :6.20                      
+ major_vessels                   thal      heart_disease
+ Min.   :0.0000   normal           :152   absence :150  
+ 1st Qu.:0.0000   fixed defect     : 14   presence:120  
+ Median :0.0000   reversible defect:104                 
+ Mean   :0.6704                                         
+ 3rd Qu.:1.0000                                         
+ Max.   :3.0000                                         
+> shw <- array(1, nrow(StatlogHeart))
+> shw[StatlogHeart$heart_disease == "presence"] <- 5
+> sht <- evtree(heart_disease ~ . , data = StatlogHeart, weights = shw) 
+> sht
+
+Model formula:
+heart_disease ~ age + sex + chest_pain_type + resting_blood_pressure + 
+    serum_colestoral + fasting_blood_sugar + resting_electrocardiographic_results + 
+    maximum_heart_rate + exercise_induced_angina + oldpeak + 
+    slope_of_the_peak + major_vessels + thal
+
+Fitted party:
+[1] root
+|   [2] thal in fixed defect, reversible defect: presence (n = 466, err = 6.7%)
+|   [3] thal in normal
+|   |   [4] chest_pain_type in typical angina, asymptomatic
+|   |   |   [5] major_vessels < 1
+|   |   |   |   [6] resting_blood_pressure < 155
+|   |   |   |   |   [7] age < 61: absence (n = 23, err = 0.0%)
+|   |   |   |   |   [8] age >= 61: presence (n = 21, err = 28.6%)
+|   |   |   |   [9] resting_blood_pressure >= 155: presence (n = 21, err = 4.8%)
+|   |   |   [10] major_vessels >= 1: presence (n = 102, err = 6.9%)
+|   |   [11] chest_pain_type in atypical angina, non-anginal pain
+|   |   |   [12] oldpeak < 1.8
+|   |   |   |   [13] major_vessels < 2: absence (n = 84, err = 11.9%)
+|   |   |   |   [14] major_vessels >= 2: presence (n = 14, err = 28.6%)
+|   |   |   [15] oldpeak >= 1.8: presence (n = 19, err = 21.1%)
+
+Number of inner nodes:    7
+Number of terminal nodes: 8
+> table(predict(sht), StatlogHeart$heart_disease)
+          
+           absence presence
+  absence       97        2
+  presence      53      118
+> plot(sht)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("evtree")
+> ### * evtree
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: evtree
+> ### Title: Evolutionary Learning of Globally Optimal Trees
+> ### Aliases: evtree evtree-package
+> ### Keywords: tree
+> 
+> ### ** Examples
+> 
+> ## regression
+> airq <- subset(airquality, !is.na(Ozone) & complete.cases(airquality))
+> ev_air <- evtree(Ozone ~ ., data = airq)
+> ev_air
+
+Model formula:
+Ozone ~ Solar.R + Wind + Temp + Month + Day
+
+Fitted party:
+[1] root
+|   [2] Wind < 6.3: 101.417 (n = 12, err = 10426.9)
+|   [3] Wind >= 6.3
+|   |   [4] Temp < 83: 23.720 (n = 75, err = 13715.1)
+|   |   [5] Temp >= 83: 69.875 (n = 24, err = 11586.6)
+
+Number of inner nodes:    2
+Number of terminal nodes: 3
+> plot(ev_air)
+> mean((airq$Ozone - predict(ev_air))^2)
+[1] 321.8798
+> 
+> ## classification
+> ev_iris <- evtree(Species ~ .,data = iris)
+> ev_iris
+
+Model formula:
+Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
+
+Fitted party:
+[1] root
+|   [2] Petal.Length < 3: setosa (n = 50, err = 0.0%)
+|   [3] Petal.Length >= 3
+|   |   [4] Petal.Length < 5
+|   |   |   [5] Petal.Width < 1.7: versicolor (n = 47, err = 0.0%)
+|   |   |   [6] Petal.Width >= 1.7: virginica (n = 7, err = 14.3%)
+|   |   [7] Petal.Length >= 5: virginica (n = 46, err = 4.3%)
+
+Number of inner nodes:    3
+Number of terminal nodes: 4
+> plot(ev_iris)
+> table(predict(ev_iris), iris$Species)
+            
+             setosa versicolor virginica
+  setosa         50          0         0
+  versicolor      0         47         0
+  virginica       0          3        50
+> 1 - mean(predict(ev_iris) == iris$Species)
+[1] 0.02
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  45.502 0.064 45.844 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

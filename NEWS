@@ -1,3 +1,12 @@
+Changes in Version 0.1-2
+
+  o Added test output for examples and vignette for improved package checks.
+
+  o Improvements in package vignette.
+  
+  o Added CITATION: working paper on evtree.
+
+
 Changes in Version 0.1-1
 
   o CRAN checks turned up problems in C++ code on Fedora and Solaris.
