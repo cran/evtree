@@ -60,7 +60,7 @@ evtree <- function(formula, data, subset, na.action, weights, control = evtree.c
         if(is.factor(mf[,nVariables]))
             stop('dependent variable is a factor')
         if(var(mf[,nVariables]) <= 0)
-            stop("variance of the denpendent variable is 0")
+            stop("variance of the dependent variable is 0")
     }
 
     for (i in 1:(nVariables-1)){
