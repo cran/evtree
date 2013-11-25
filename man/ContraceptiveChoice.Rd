@@ -44,6 +44,7 @@ Lim, T.-S., Loh, W.-Y. & Shih, Y.-S. (1999). A Comparison of Prediction Accuracy
 data("ContraceptiveChoice")
 summary(ContraceptiveChoice)
 \dontrun{
+set.seed(1090)
 contt <- evtree(contraceptive_method_used ~ . , data = ContraceptiveChoice) 
 contt
 table(predict(contt), ContraceptiveChoice$contraceptive_method_used)

@@ -1,7 +1,7 @@
 
-R version 3.0.0 (2013-04-03) -- "Masked Marvel"
+R Under development (unstable) (2013-11-25 r64296) -- "Unsuffered Consequences"
 Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -21,6 +21,13 @@ Type 'q()' to quit R.
 > library('evtree')
 Loading required package: partykit
 Loading required package: grid
+
+Attaching package: 'partykit'
+
+The following object is masked from 'package:grid':
+
+    depth
+
 > 
 > base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > cleanEx()
@@ -129,6 +136,7 @@ detaching 'package:Formula', 'package:rpart'
                                                                    
                                                                    
 > ## Not run: 
+> ##D set.seed(1090)
 > ##D contt <- evtree(contraceptive_method_used ~ . , data = ContraceptiveChoice) 
 > ##D contt
 > ##D table(predict(contt), ContraceptiveChoice$contraceptive_method_used)
@@ -227,6 +235,7 @@ detaching 'package:Formula', 'package:rpart'
 > ## Not run: 
 > ##D gcw <- array(1, nrow(GermanCredit))
 > ##D gcw[GermanCredit$credit_risk == "bad"] <- 5
+> ##D set.seed(1090)
 > ##D gct <- evtree(credit_risk ~ . , data = GermanCredit, weights = gcw) 
 > ##D gct
 > ##D table(predict(gct), GermanCredit$credit_risk)
@@ -272,6 +281,7 @@ detaching 'package:Formula', 'package:rpart'
  3rd Qu.:45.884   3rd Qu.:240.564                 
  Max.   :90.000   Max.   :495.561                 
 > ## Not run: 
+> ##D set.seed(1090)
 > ##D mgtt <- evtree(class ~ . , data = MAGICGammaTelescope) 
 > ##D mgtt
 > ##D table(predict(mgtt), MAGICGammaTelescope$class)
@@ -325,6 +335,7 @@ detaching 'package:Formula', 'package:rpart'
  Max.   :3.0000                                         
 > shw <- array(1, nrow(StatlogHeart))
 > shw[StatlogHeart$heart_disease == "presence"] <- 5
+> set.seed(1090)
 > sht <- evtree(heart_disease ~ . , data = StatlogHeart, weights = shw) 
 > sht
 
@@ -336,28 +347,26 @@ heart_disease ~ age + sex + chest_pain_type + resting_blood_pressure +
 
 Fitted party:
 [1] root
-|   [2] thal in fixed defect, reversible defect: presence (n = 466, err = 6.7%)
-|   [3] thal in normal
-|   |   [4] chest_pain_type in typical angina, asymptomatic
-|   |   |   [5] major_vessels < 1
-|   |   |   |   [6] resting_blood_pressure < 155
-|   |   |   |   |   [7] age < 61: absence (n = 23, err = 0.0%)
-|   |   |   |   |   [8] age >= 61: presence (n = 21, err = 28.6%)
-|   |   |   |   [9] resting_blood_pressure >= 155: presence (n = 21, err = 4.8%)
-|   |   |   [10] major_vessels >= 1: presence (n = 102, err = 6.9%)
-|   |   [11] chest_pain_type in atypical angina, non-anginal pain
-|   |   |   [12] oldpeak < 1.8
-|   |   |   |   [13] major_vessels < 2: absence (n = 84, err = 11.9%)
-|   |   |   |   [14] major_vessels >= 2: presence (n = 14, err = 28.6%)
-|   |   |   [15] oldpeak >= 1.8: presence (n = 19, err = 21.1%)
+|   [2] resting_blood_pressure < 156
+|   |   [3] major_vessels < 1
+|   |   |   [4] oldpeak < 1.8
+|   |   |   |   [5] thal in reversible defect
+|   |   |   |   |   [6] chest_pain_type in atypical angina, asymptomatic: presence (n = 83, err = 9.6%)
+|   |   |   |   |   [7] chest_pain_type in typical angina, non-anginal pain: absence (n = 8, err = 0.0%)
+|   |   |   |   [8] thal in normal, fixed defect
+|   |   |   |   |   [9] age < 61: absence (n = 85, err = 5.9%)
+|   |   |   |   |   [10] age >= 61: presence (n = 30, err = 33.3%)
+|   |   |   [11] oldpeak >= 1.8: presence (n = 73, err = 11.0%)
+|   |   [12] major_vessels >= 1: presence (n = 382, err = 7.1%)
+|   [13] resting_blood_pressure >= 156: presence (n = 89, err = 10.1%)
 
-Number of inner nodes:    7
-Number of terminal nodes: 8
+Number of inner nodes:    6
+Number of terminal nodes: 7
 > table(predict(sht), StatlogHeart$heart_disease)
           
            absence presence
-  absence       97        2
-  presence      53      118
+  absence       88        1
+  presence      62      119
 > plot(sht)
 > 
 > 
@@ -376,6 +385,7 @@ Number of terminal nodes: 8
 > ### ** Examples
 > 
 > ## regression
+> set.seed(1090)
 > airq <- subset(airquality, !is.na(Ozone) & complete.cases(airquality))
 > ev_air <- evtree(Ozone ~ ., data = airq)
 > ev_air
@@ -405,12 +415,12 @@ Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
 
 Fitted party:
 [1] root
-|   [2] Petal.Length < 3: setosa (n = 50, err = 0.0%)
-|   [3] Petal.Length >= 3
-|   |   [4] Petal.Length < 5
+|   [2] Petal.Length < 5
+|   |   [3] Petal.Width < 1: setosa (n = 50, err = 0.0%)
+|   |   [4] Petal.Width >= 1
 |   |   |   [5] Petal.Width < 1.7: versicolor (n = 47, err = 0.0%)
 |   |   |   [6] Petal.Width >= 1.7: virginica (n = 7, err = 14.3%)
-|   |   [7] Petal.Length >= 5: virginica (n = 46, err = 4.3%)
+|   [7] Petal.Length >= 5: virginica (n = 46, err = 4.3%)
 
 Number of inner nodes:    3
 Number of terminal nodes: 4
@@ -428,8 +438,9 @@ Number of terminal nodes: 4
 > 
 > ### * <FOOTER>
 > ###
+> options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  45.346 0.056 45.486 0 0 
+Time elapsed:  50.428 0.156 50.632 0 0 
 > grDevices::dev.off()
 null device 
           1 

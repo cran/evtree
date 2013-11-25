@@ -63,6 +63,7 @@ probabilities (for classification trees), and nodes.
 
 \examples{
 ## regression
+set.seed(1090)
 airq <- subset(airquality, !is.na(Ozone) & complete.cases(airquality))
 ev_air <- evtree(Ozone ~ ., data = airq)
 ev_air

@@ -64,6 +64,7 @@ summary(GermanCredit)
 \dontrun{
 gcw <- array(1, nrow(GermanCredit))
 gcw[GermanCredit$credit_risk == "bad"] <- 5
+set.seed(1090)
 gct <- evtree(credit_risk ~ . , data = GermanCredit, weights = gcw) 
 gct
 table(predict(gct), GermanCredit$credit_risk)
