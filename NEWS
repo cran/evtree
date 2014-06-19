@@ -1,3 +1,10 @@
+Changes in Version 0.1-5
+
+  o Updated contact data.
+
+  o CRAN checks showed memory access errors. These are fixed now.
+
+
 Changes in Version 0.1-4
 
   o Updated contact data.

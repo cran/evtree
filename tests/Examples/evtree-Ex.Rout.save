@@ -347,26 +347,28 @@ heart_disease ~ age + sex + chest_pain_type + resting_blood_pressure +
 
 Fitted party:
 [1] root
-|   [2] resting_blood_pressure < 156
-|   |   [3] major_vessels < 1
-|   |   |   [4] oldpeak < 1.8
-|   |   |   |   [5] thal in reversible defect
-|   |   |   |   |   [6] chest_pain_type in atypical angina, asymptomatic: presence (n = 83, err = 9.6%)
-|   |   |   |   |   [7] chest_pain_type in typical angina, non-anginal pain: absence (n = 8, err = 0.0%)
-|   |   |   |   [8] thal in normal, fixed defect
-|   |   |   |   |   [9] age < 61: absence (n = 85, err = 5.9%)
-|   |   |   |   |   [10] age >= 61: presence (n = 30, err = 33.3%)
-|   |   |   [11] oldpeak >= 1.8: presence (n = 73, err = 11.0%)
-|   |   [12] major_vessels >= 1: presence (n = 382, err = 7.1%)
-|   [13] resting_blood_pressure >= 156: presence (n = 89, err = 10.1%)
+|   [2] thal in normal, fixed defect
+|   |   [3] age < 59
+|   |   |   [4] maximum_heart_rate < 161
+|   |   |   |   [5] sex in male: presence (n = 86, err = 18.6%)
+|   |   |   |   [6] sex in female
+|   |   |   |   |   [7] serum_colestoral < 309: absence (n = 19, err = 0.0%)
+|   |   |   |   |   [8] serum_colestoral >= 309: presence (n = 10, err = 0.0%)
+|   |   |   [9] maximum_heart_rate >= 161: absence (n = 62, err = 8.1%)
+|   |   [10] age >= 59
+|   |   |   [11] chest_pain_type in asymptomatic: presence (n = 94, err = 9.6%)
+|   |   |   [12] chest_pain_type in typical angina, atypical angina, non-anginal pain
+|   |   |   |   [13] sex in male: presence (n = 43, err = 18.6%)
+|   |   |   |   [14] sex in female: absence (n = 16, err = 0.0%)
+|   [15] thal in reversible defect: presence (n = 420, err = 6.0%)
 
-Number of inner nodes:    6
-Number of terminal nodes: 7
+Number of inner nodes:    7
+Number of terminal nodes: 8
 > table(predict(sht), StatlogHeart$heart_disease)
           
            absence presence
-  absence       88        1
-  presence      62      119
+  absence       92        1
+  presence      58      119
 > plot(sht)
 > 
 > 

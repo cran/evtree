@@ -128,7 +128,7 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
         	   		      R_splitP[i] = -999999;
 
                 		       // if there is only one independend variabe, and the variable is numeric, csplit
-		            	       // is not a vector. in this cas csplit is not used.
+		            	       // is not a vector. in this case csplit is not used.
 			      	       if(this->maxCat > 1){
 		               	       	      for(int k = 0; k < this->maxCat; k++){
                 			             R_csplit[i * this->maxCat + k] = 2;
@@ -233,22 +233,26 @@ bool Container::evolution(){
 
 
 double Container::pruneNode(int treeNumber){
-        // variation operator prune
-        // selects a random node and prunes it
+    // variation operator prune
+    // selects a random node and prunes it
     if(this->trees[treeNumber]->nNodes > 2){
         double oldPerformance = this->trees[treeNumber]->performance;
 	int nodeNumber = 0;
 	bool flag = false;
-	for(int i = 0; i < 10 && flag == false; i++){
+	for(int i = 0; flag == false; i++){
             nodeNumber = randomSplitNode(treeNumber);
-            if(this->trees[treeNumber]->splitV[nodeNumber*2+1] < 0 &&
+	    if(nodeNumber*2+2 >= this->maxNode)
+	        flag = true;
+	    else if(this->trees[treeNumber]->splitV[nodeNumber*2+1] < 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+2] < 0)
-                flag = true;
+	        flag = true;
+	    else if(i>10)
+		return -1;
 	}
-        int parent= (int) floorf((nodeNumber-1)/2) ;
-        if(flag == false || parent < 0)
+        if(nodeNumber <= 0)
             return -1;
 
+	int parent= (int) floorf((nodeNumber-1)/2);
 	int oldSplitV = this->trees[treeNumber]->splitV[nodeNumber];
 	double oldSplitP = this->trees[treeNumber]->splitP[nodeNumber];
 	this->trees[treeNumber]->splitV[nodeNumber] = -999999;
@@ -310,7 +314,7 @@ int Container::pruneAllNodes(int treeNumber){
         return 0;
     oldPerformance = this->trees[treeNumber]->performance;
         if(this->trees[treeNumber]->nNodes > 2){
-            for(int nodeNumber = 1; nodeNumber < this->maxNode; nodeNumber++){
+            for(int nodeNumber = 1; nodeNumber*2+2 < this->maxNode; nodeNumber++){
                 int parent = (int) floorf((nodeNumber-1)/2);
                 if( this->trees[treeNumber]->splitV[nodeNumber] >= 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+1] < 0 &&
@@ -670,6 +674,8 @@ double Container::mutateNode(int treeNumber, int nodeNumber, bool isMinorChange)
 
 int Container::calculateNoOfNodesInSubtree(int treeNumber, int nodeNumber){
     // used by mutateNode to calculate the number of nodes in a subtree below nodeNumber
+    if(nodeNumber*2+2 > this->maxNode)
+         return 1;
     if(this->trees[treeNumber]->splitV[nodeNumber*2+1] >= 0  && this->trees[treeNumber]->nodes[nodeNumber]->leftChild != NULL)
          return calculateNoOfNodesInSubtree(treeNumber, nodeNumber*2+1)+1;
     else return 1;
@@ -854,7 +860,9 @@ int Container::randomSplitNode(int treeNumber){
                 j++ ;
             } 
 	}
-        int rvalue = nodes[rand()%(j)];
+        int rvalue = 0;
+	if(j > 1) 
+	   rvalue = nodes[rand()%j];
         delete [] nodes;
         nodes = NULL;
         return rvalue;
@@ -867,7 +875,7 @@ bool Container::evaluateTree(int treeNumber, bool pruneIfInvalid, int nodeNumber
             return false;
 	}else{
             int found = 0;
-            for(int i = nodeNumber; i < this->maxNode && found < this->trees[treeNumber]->nNodes; i++){
+            for(int i = nodeNumber; i*2+2 < this->maxNode && found < this->trees[treeNumber]->nNodes; i++){
                 if(this->trees[treeNumber]->splitV[i] >= 0){
                     found++;                                  
                     if(this->trees[treeNumber]->nodes[i]->sumLeftLocalWeights == 0 &&  this->trees[treeNumber]->nodes[i]->sumRightLocalWeights == 0){
@@ -1020,28 +1028,24 @@ double Container::crossover(int treeNumber1){
         if(i >= 30)
             return -2;
         int depthOfRandomNode = 0;
-        bool flag = false;
-        while(flag == false){
-            if(randomNode1  >= pow((float)2,depthOfRandomNode+1)-1){  //smaller leftmost node of tree
-                   depthOfRandomNode++;
-            }else{
-                   flag = true;
-            }
+        while(randomNode1  >= pow((float)2,depthOfRandomNode+1)-1){
+		return -3,    
+             depthOfRandomNode++;
         }
-	int randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode+1) - (int)pow((float)2,depthOfRandomNode))) + (int)pow((float)2,depthOfRandomNode)-1;
+	int randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
         i = 0;
-        while(this->trees[ treeNumber2 ]->splitV[randomNode2] < 0 && i <= 30){
-            randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode+1)-(int)pow((float)2,depthOfRandomNode))) + (int)pow((float)2,depthOfRandomNode)-1;
+        while(this->trees[treeNumber2]->splitV[randomNode2] < 0 && i <= 30){
+            randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
             i++;
         }
         if(i >= 30)
             return -2; 
-        int* splitV = new int[ this->maxNode ];
-        double* splitP = new double[ this->maxNode];
+        int* splitV = new int[this->maxNode ];
+        double* splitP = new double[this->maxNode];
         int **csplit;
         csplit = new int*[this->maxCat];
         int* splitV2 = new int[ this->maxNode];
-        double* splitP2 = new double[ this->maxNode];
+        double* splitP2 = new double[this->maxNode];
         int **csplit2;
         csplit2 = new int*[this->maxCat];
         // init data matrix

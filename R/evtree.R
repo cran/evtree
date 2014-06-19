@@ -80,7 +80,7 @@ evtree <- function(formula, data, subset, na.action, weights, control = evtree.c
     for(i in 1:(control$maxdepth-1) ){
         maxNode <- maxNode*2+1
     }
-    
+
     if(2*control$minbucket > sum(weights)-1)
         stop(paste("no split could be found \n \"minbucket\" must be smaller than half the weighted number of observations in the training data"))
             

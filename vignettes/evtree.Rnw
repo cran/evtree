@@ -54,7 +54,7 @@
   Innsbruck Medical University\\
   Department for Medical Statistics, Informatics and Health Economics\\
   6020, Innsbruck, Austria\\
-  E-mail: \email{Thomas.Grubinger@utanet.at}, \email{Karl-Peter.Pfeiffer@i-med.ac.at}\\
+  E-mail: \email{Thomas.Grubinger@scch.at}, \email{Karl-Peter.Pfeiffer@i-med.ac.at}\\
   URL: \url{http://www.i-med.ac.at/msig/mitarbeiter/grubinger/}\\
   \phantom{URL: }\url{http://www.i-med.ac.at/msig/mitarbeiter/pfeiffer/}\\
 
@@ -528,8 +528,6 @@ ${\theta}_{i+1}^2 = \mathrm{sub}2({\theta}_{i}^2, r_2) \cup \mathrm{sub}1({\thet
 If the crossover creates some invalid nodes in either one of the new trees ${\theta}_{i+1}^1$
 or ${\theta}_{i+1}^2$, they are omitted.
 
-\pagebreak %% FIXME
-
 \subsection{Evaluation function}
 \label{eval}
 
@@ -922,6 +920,7 @@ function values may be found by subsequent runs of \code{evtree()}. Here, this
 problem is alleviated by restricting the maximal depth of the tree, yielding a
 clear solution.
 
+\pagebreak 
 
 \section{Performance comparison}
 \label{comp}
@@ -1489,7 +1488,6 @@ of the 4 datasets is based on 250~bootstrap samples. In Section~\ref{param_op}, 
 is simulated with a diverse set of variation operator probability choices. Section~\ref{param_ps}
 provides results for the choice of different population sizes. 
 
-\pagebreak %% FIXME
 
 \subsection{Variation operator probabilities}
 \label{param_op}

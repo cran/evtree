@@ -1,8 +1,8 @@
 Package: evtree
 Title: Evolutionary Learning of Globally Optimal Trees
-Version: 0.1-4
-Date: 2013-11-25
-Authors@R: c(person(given = "Thomas", family = "Grubinger", role = c("aut", "cre"), email = "Thomas.Grubinger@utanet.at"),
+Version: 0.1-5
+Date: 2014-06-19
+Authors@R: c(person(given = "Thomas", family = "Grubinger", role = c("aut", "cre"), email = "Thomas.Grubinger@scch.at"),
              person(given = "Achim", family = "Zeileis", role = "aut", email = "Achim.Zeileis@R-project.org"),
              person(given = "Karl-Peter", family = "Pfeiffer", role = "aut", email = "Karl-Peter.Pfeiffer@i-med.ac.at"))
 Description: Commonly used classification and regression tree methods like the CART algorithm
@@ -23,11 +23,8 @@ License: GPL-2
 Author: Thomas Grubinger [aut, cre],
   Achim Zeileis [aut],
   Karl-Peter Pfeiffer [aut]
-Maintainer: Thomas Grubinger <Thomas.Grubinger@utanet.at>
-Repository: CRAN
-Repository/R-Forge/Project: partykit
-Repository/R-Forge/Revision: 388
-Repository/R-Forge/DateTimeStamp: 2013-11-25 10:01:55
-Date/Publication: 2013-11-26 22:38:27
-Packaged: 2013-11-25 15:20:20 UTC; rforge
+Maintainer: Thomas Grubinger <Thomas.Grubinger@scch.at>
+Packaged: 2014-06-21 21:27:06 UTC; tomturbo
 NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2014-07-01 10:31:19
