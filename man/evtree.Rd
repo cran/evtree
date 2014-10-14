@@ -1,7 +1,6 @@
 \name{evtree}
 \alias{evtree}
 \alias{evtree-package}
-\encoding{latin1}
 
 \title{
 Evolutionary Learning of Globally Optimal Trees
@@ -40,7 +39,7 @@ time. The algorithm terminates when the quality of the best trees does not
 improve further, but not later than a maximum number of iterations specified by
 \code{niterations} in \code{\link{evtree.control}}.
 
-More details on the algorithm are provided Grubinger et al. (2011) which is also
+More details on the algorithm are provided Grubinger et al. (2014) which is also
 provided as \code{vignette("evtree", package = "evtree")}. 
 
 The resulting trees can be summarized and visualized by the \code{\link[partykit]{print.constparty}},
@@ -54,11 +53,10 @@ probabilities (for classification trees), and nodes.
 }
 
 \references{
-  Grubinger T, Zeileis A, Pfeiffer KP (2011). evtree: Evolutionary Learning of Globally
-  Optimal Classification and Regression Trees in R. Working Paper 2011-xx.
-  Working Papers in Economics and Statistics, Research Platform Empirical and
-  Experimental Economics, Universität Innsbruck.
-  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2011-xx}
+Grubinger T, Zeileis A, Pfeiffer KP (2014).
+  evtree: Evolutionary Learning of Globally Optimal Classification and Regression Trees in R.
+  \emph{Journal of Statistical Software}, \bold{61}(1), 1-29.
+  \url{http://www.jstatsoft.org/v61/i01/}
 }
 
 \examples{

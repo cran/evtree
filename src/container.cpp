@@ -3,8 +3,8 @@
 extern "C"{
 static Container* container;
 
-void tree(int* nInst, int* nVar, int *varType, double* nData, int* weights, int* prediction, int *splitV, double *splitP, int* csplit, int* maxNode, int* minBucket, int* minSplit, int* nIterations, int* nTrees, int* pMutateMajor, int* pMutateMinor, int *pCrossover, int *pSplit, int *pPrune, int* method, double* alpha, int* seed){
-	container = new Container(nInst, nVar, varType, nData, weights, prediction, splitV, splitP, csplit, maxNode, minBucket, minSplit, nIterations, nTrees, pMutateMajor, pMutateMinor, pCrossover, pSplit, pPrune, method, alpha, seed);
+void tree(int* nInst, int* nVar, int *varType, double* nData, int* weights, int* prediction, int *splitV, double *splitP, int* csplit, int* maxNode, int* minBucket, int* minSplit, int* nIterations, int* nTrees, int* pMutateMajor, int* pMutateMinor, int *pCrossover, int *pSplit, int *pPrune, int* method, double* alpha){
+	container = new Container(nInst, nVar, varType, nData, weights, prediction, splitV, splitP, csplit, maxNode, minBucket, minSplit, nIterations, nTrees, pMutateMajor, pMutateMinor, pCrossover, pSplit, pPrune, method, alpha);
 }//tree
 
 void freememory(void){
@@ -22,11 +22,8 @@ bool Container::checkInterrupt(void){
   return (R_ToplevelExec(chkIntFn, temp) == FALSE);
 }
 
-Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, double* R_nData, int* R_weights, int* R_prediction, int *R_splitV, double *R_splitP, int* R_csplit, int* R_maxNode, int *R_minBucket, int* R_minSplit, int* R_nIterations, int* R_nTrees, int* R_pMutateMajor, int* R_pMutateMinor, int* R_pCrossover, int* R_pSplit, int* R_pPrune, int* R_method, double* R_alpha, int* R_seed ){
+Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, double* R_nData, int* R_weights, int* R_prediction, int *R_splitV, double *R_splitP, int* R_csplit, int* R_maxNode, int *R_minBucket, int* R_minSplit, int* R_nIterations, int* R_nTrees, int* R_pMutateMajor, int* R_pMutateMinor, int* R_pCrossover, int* R_pSplit, int* R_pPrune, int* R_method, double* R_alpha ){
     // constructor
-    if(*R_seed < 0)
-	    *R_seed = (unsigned)time(0);
-    srand(*R_seed);
     this->maxNode = *R_maxNode;
     this->minSplit = *R_minSplit;
     this->nTrees = *R_nTrees;
@@ -90,9 +87,11 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
     this->alpha = (*R_alpha);
     this->trees = new Tree*[this->nTrees];
 
+	GetRNGstate();
     for(int i = 0; i < this->nTrees; i++){
         this->trees[i] = new Tree(&this->nInstances, &this->nVariables, this->data, this->weights, &this->maxCat, this->variables, &this->maxNode, &this->minBucket, &this->minSplit);
     }
+	PutRNGstate();
 
     bool allTreesInitialized = TRUE;
     for(int i = 0; i < this->nTrees; i++){
@@ -102,18 +101,19 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
        		this->evaluateTree(i, true, 0);
     }
 
-    if(allTreesInitialized == TRUE){
-        // start evolving the initial solution    
-    	bool succ =  this->evolution();
-
-    	// write the information of the best tree into the variables passed from R
-         if(succ == true){
+    if(allTreesInitialized == true){    
+		// start evolving the initial solution   
+		GetRNGstate();
+    	bool succ =  this->evolution();	
+		PutRNGstate();
+		// write the information of the best tree into the variables passed from R
+        if(succ == true){
    	 	if(this->elitismList[0] < this->nTrees){
               		*R_nIterations = this->nIterations;
        	      		for(int i = 0; i < *this->trees[this->elitismList[0]]->maxNode; i++){
 		              if(this->trees[this->elitismList[0]]->splitV[i] >= 0 ){
             			   R_splitV[i] = this->trees[this->elitismList[0]]->splitV[i]+1;
-			           R_splitP[i] = this->trees[this->elitismList[0]]->splitP[i];
+			               R_splitP[i] = this->trees[this->elitismList[0]]->splitP[i];
 
                 	    	   for(int k = 0; k < this->maxCat; k++){
                			 	if( variables[*this->trees[this->elitismList[0]]->nodes[i]->splitV]->isCat == true
@@ -124,8 +124,8 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
                          		}
                     	    	   }
              		      }else{
-		                      R_splitV[i] = -999999;
-        	   		      R_splitP[i] = -999999;
+		                     R_splitV[i] = -999999;
+							R_splitP[i] = -999999;
 
                 		       // if there is only one independend variabe, and the variable is numeric, csplit
 		            	       // is not a vector. in this case csplit is not used.
@@ -147,15 +147,14 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
 
 bool Container::evolution(){
     // evolves the initial solution
-
-    int randomNumber = 0; // random number calculated for each tree in each iteration. used for operator selection
+		
     bool elitismFlag = false;
     for(int i = 0; i < this->nIterations; i++){
 
-	//check for user interrupts
-	if (checkInterrupt()) { 
-		return false;
-	}
+		//check for user interrupts
+		if (checkInterrupt()) { 
+			return false;
+		}
         
         for(int j = 0; j < this->nTrees; j++){
             // check if tree j is in the elitism list
@@ -170,38 +169,38 @@ bool Container::evolution(){
 
                 if (elitismFlag == true){
                     int m = this->getGenitor();
-                    int rn = rand()%1000;
-                    if( rn < 20 && this->elitismList[0] < this->nTrees ){
+
+                    if( Tree::getUnifRandNumber(1000) < 20 && this->elitismList[0] < this->nTrees ){
                         if(this->trees[m]->performance/this->trees[ this->elitismList[0] ]->performance < 1.03 ){
                              m = this->getRandomTree(false);
                         }
                         this->overwriteTree(j, m);
                     }
                 }
-           }
+            }
            // call of variation operators
-           if(elitismFlag == false){
-               randomNumber= (rand()%100);
-              if(randomNumber < this->probMutateMajor){
-                     this->initMutateNode(j, false);
-              }else if(randomNumber < this->probMutateMinor){
-                     this->initMutateNode(j, true); 
-              }else if(randomNumber < this->probSplit){
-                     this->splitNode(j);
-              }else if(randomNumber < this->probPrune){
-                     this->pruneNode(j);
-              }else{
-         	     this->crossover(j);            
-              }
+            if(elitismFlag == false){
+                double randomNumber = Tree::getUnifRandNumber(100);
+                if(randomNumber < (double)this->probMutateMajor){
+                    this->initMutateNode(j, false);
+                }else if(randomNumber < (double)this->probMutateMinor){
+                    this->initMutateNode(j, true); 
+                }else if(randomNumber < (double)this->probSplit){
+                    this->splitNode(j);
+                }else if(randomNumber < (double)this->probPrune){
+                    this->pruneNode(j);
+                }else{
+					this->crossover(j);      
+                }
                // if j belongs in the elitism list an extra copy is made replacing a random tree
-               if( i > 10){
+                if( i > 10){
                      if(this->updatePerformanceList(j) == true){
                          this->overwriteTree(j, this->getRandomTree(false));
-                     }
-               }else if(i > 3){
-                   this->updatePerformanceList(j);
-               }
-           }// end if(elitismFlag == false)
+                    }
+                }else if(i > 3){
+                    this->updatePerformanceList(j);
+                }
+            }// end if(elitismFlag == false)
       }// end for(int j=0; j<nTrees; j++)
 
       if(i > 7 && i%10 == 0 && this->elitismList[this->elitismRange-1] < this->nTrees){
@@ -487,7 +486,7 @@ int Container::randomTerminalNode(int treeNumber){
         return -1;
     }
     for( int i = 0; flag == false && i < 101; i++){
-        randomNode= rand()%j;
+        randomNode=Tree::getUnifRandNumber(j);
         if( trees[treeNumber]->nodes[(int) ((nodes[randomNode]-1)/2)]->sumLocalWeights > this->minSplit){
             flag = true;
         }
@@ -527,7 +526,7 @@ double Container::mutateNode(int treeNumber, int nodeNumber, bool isMinorChange)
         double oldPerformance = this->trees[treeNumber]->performance;
         int oldSplitV = this->trees[treeNumber]->splitV[nodeNumber];  // for reversal in case no split can be found for this node
         int oldSplitV2 = -999999;
-	double oldSplitP = this->trees[treeNumber]->splitP[nodeNumber];
+	    double oldSplitP = this->trees[treeNumber]->splitP[nodeNumber];
         int *oldCsplit = new int[this->maxCat];
         if(variables[this->trees[treeNumber]->splitV[nodeNumber] ]->isCat == true){
             for(int i = 0; i < variables[this->trees[treeNumber]->splitV[nodeNumber]]->nCats; i++){
@@ -542,7 +541,7 @@ double Container::mutateNode(int treeNumber, int nodeNumber, bool isMinorChange)
         int parent = 0;
         int noOfPrunedNodes = 0;
         if(isMinorChange == false){// change split-variable and split-point; non valid nodes are pruned later
-            if( (rand()%2) == 1){     // Change split Variable?
+            if( Tree::getUnifRandNumber(2) == 1){     // Change split Variable?
                  this->randomSplitVariable(treeNumber, nodeNumber);
             }
             if(variables[this->trees[treeNumber]->splitV[nodeNumber]]->isCat == false){
@@ -698,7 +697,7 @@ bool Container::changeRandomCategories(int treeNumber, int nodeNumber){
         else if(this->trees[treeNumber]->csplit[i][nodeNumber] == 3)
             right++;
         else{
-            if(rand()%2 == 1){
+            if( Tree::getUnifRandNumber(2) == 1 ){
                this->trees[treeNumber]->csplit[i][nodeNumber] = 1;
                left++;
             }else{
@@ -707,11 +706,11 @@ bool Container::changeRandomCategories(int treeNumber, int nodeNumber){
             }
         }
     }
-    int changes = max(1, rand()%( (int) variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1) );
+    int changes = max(1,Tree::getUnifRandNumber((int) variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1));
     int i = 0;
     int changedCat;
      while(changes > 0 && i < changes*3){
-        changedCat = rand()%this->variables[ *this->trees[treeNumber]->nodes[nodeNumber]->splitV]->nCats;
+        changedCat = Tree::getUnifRandNumber(this->variables[ *this->trees[treeNumber]->nodes[nodeNumber]->splitV]->nCats);
         if(this->trees[treeNumber]->csplit[changedCat][nodeNumber] == 1 && left > 1){
             this->trees[treeNumber]->csplit[changedCat][nodeNumber] = 3;
             left--;
@@ -730,12 +729,12 @@ bool Container::changeRandomCategories(int treeNumber, int nodeNumber){
 
 
 int Container::getRandomTree(bool elitism){
-   int temp = this->elitismList[rand()%this->elitismRange];
+    int temp = this->elitismList[Tree::getUnifRandNumber(this->elitismRange)];
     if(elitism == true && temp >= 0 && temp < this->nTrees){
         return temp;
     }else{
         bool elitismFlag = false;
-        int randTree = rand()%this->nTrees;
+        int randTree = Tree::getUnifRandNumber(this->nTrees);
         while(elitismFlag == false && this->elitismList[this->elitismRange-1] < this->nTrees){
             elitismFlag = true;
             for(int f=0 ;f < this->elitismRange && elitismFlag == true; f++){
@@ -746,7 +745,7 @@ int Container::getRandomTree(bool elitism){
             if(randTree == this->elitismList[0])
                     elitismFlag = false;
             if (elitismFlag == false)
-               randTree = rand()%this->nTrees;
+				randTree = Tree::getUnifRandNumber(this->nTrees);
         }
 	return randTree;
    }
@@ -769,7 +768,7 @@ int Container::getGenitor(){
 
 void Container::randomSplitVariable(int treeNumber, int nodeNumber){
     // used by splitNode() and mutateNode()
-        this->trees[treeNumber]->splitV[nodeNumber] = (rand()%(this->nVariables-1));
+        this->trees[treeNumber]->splitV[nodeNumber] = Tree::getUnifRandNumber(this->nVariables-1);
 }
 
 
@@ -795,7 +794,7 @@ bool Container::randomSplitPoint(int treeNumber, int nodeNumber){
         for(int k = 0; k < 10 && (randomSplitPoint < min || randomSplitPoint > max); k++ ){
             randomNumber = 0.0;
             for(int i = 0; i < 12; i++){
-         	   randomNumber += ((rand()%1000)+1) / 1000.0;
+         	   randomNumber += (((double) Tree::getUnifRandNumber(1000))+1.) / 1000.0;
             }
             randomSplitPoint = (int)round(((randomNumber-6)*(max-min)/2.0)+( (max+min)/2.0 ));
         }      
@@ -828,12 +827,9 @@ bool Container::changeSplitPoint(int treeNumber, int nodeNumber){
              }
         }
 
-        int randomNumber=  max(1, (rand()%( (int)variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1))  );
-        if(rand()%2 == 0)
-               ;
-        else
+        int randomNumber= max(Tree::getUnifRandNumber((int)variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1), 1);
+        if(Tree::getUnifRandNumber(2) == 1)
               randomNumber = -randomNumber;
-
         if(randomNumber > 0 && oldPos+randomNumber > maxi)
             randomNumber = -randomNumber;
         else if(randomNumber < 0 && oldPos+randomNumber < mini)
@@ -860,12 +856,12 @@ int Container::randomSplitNode(int treeNumber){
                 j++ ;
             } 
 	}
-        int rvalue = 0;
+    int rvalue = 0;
 	if(j > 1) 
-	   rvalue = nodes[rand()%j];
-        delete [] nodes;
-        nodes = NULL;
-        return rvalue;
+	   rvalue =  nodes[Tree::getUnifRandNumber(j)];
+    delete [] nodes;
+    nodes = NULL;
+    return rvalue;
 } // end randomSplitNode
 
 
@@ -913,13 +909,13 @@ Container::~Container(){
                     delete variables[i];
 	}
 	delete [] variables;
-        variables = NULL;
-        delete [] performanceHistory;
-        performanceHistory = NULL;
-        delete [] elitismList;
-        elitismList = NULL;
-        delete [] weights;
-        weights = NULL;
+	variables = NULL;
+	delete [] performanceHistory;
+	performanceHistory = NULL;
+	delete [] elitismList;
+	elitismList = NULL;
+	delete [] weights;
+	weights = NULL;
 } // end ~Container
 
 
@@ -1028,15 +1024,14 @@ double Container::crossover(int treeNumber1){
         if(i >= 30)
             return -2;
         int depthOfRandomNode = 0;
-        while(randomNode1  >= pow((float)2,depthOfRandomNode+1)-1){
-		return -3,    
+        while(randomNode1  >= pow((float)2,depthOfRandomNode+1)-1){  
              depthOfRandomNode++;
         }
-	int randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
+	int randomNode2 = (Tree::getUnifRandNumber((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
         i = 0;
         while(this->trees[treeNumber2]->splitV[randomNode2] < 0 && i <= 30){
-            randomNode2 = (rand()%((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
-            i++;
+       	     randomNode2 = (Tree::getUnifRandNumber((int)pow((float)2,depthOfRandomNode) - (int)pow((float)2,depthOfRandomNode-1))) + (int)pow((float)2,depthOfRandomNode-1)-1;
+             i++;
         }
         if(i >= 30)
             return -2; 

@@ -238,7 +238,7 @@ ciplot <- function(x, xlim = NULL, main = "", xlab = "", ylab = TRUE) {
   axis(2, at = 1:k, labels = ylab, las = 1, cex = 0.8)  
   axis(2, at = k + 1.5, labels = main, tick = FALSE, las = 1, outer = TRUE, cex.axis = 1.5, xpd = TRUE)
   mtext(xlab, side = 1, line = 3, xpd = TRUE)
-  if (dim(x) >= 17) abline(h = 5.5)
+  if (NROW(x) >= 17) abline(h = 5.5)
   abline(v = 0, lty = 2)  
   box()
 }
@@ -387,13 +387,15 @@ for(j in 1:ncol(chesstable_means)){
 }
 
 chesstable <- cbind(rbind("0\\%","5\\%","10\\%"), chesstable)
-colnames(chesstable)[1] = ""
+colnames(chesstable)[1] <- ""
+colnames(chesstable)[6:9] <- colnames(chesstable)[2:5]
 
 print(xtable(chesstable,
 caption = "Mean (and standard deviation) of accuracy and complexity for simulated $4 \\times 4$ chessboard examples.",
 caption.placement= "bottom",
-table.placement="t!",
+table.placement="b!",
 label= "tab:resultsChessboard"), 
+comment = FALSE,
 include.rownames = FALSE, allign= "rllllll", hline.after=NULL,
 sanitize.text.function = identity,
 add.to.row=list(pos=list(-1,-1, 0, 3), command=c(

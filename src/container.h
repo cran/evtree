@@ -38,7 +38,7 @@ class Container{
          public:
          Container(int* R_nInstances, int*  R_nVariables, int* R_varType, double*  R_nData, int*  R_weights, int*  R_prediction, int* R_splitV, double*  R_splitP, int*  R_csplit, int*  
          R_maxNode, int*  R_minBucket,int*  R_minSplit, int*  R_nIterations, int*  R_nTrees, int*  R_pMutateMajor, int* R_pMutateMinor, int*  R_pCrossover, int*  R_pSplit, int*  R_pPrune, 
-         int*  R_method, double*  R_alpha, int*  R_seed);
+         int*  R_method, double*  R_alpha);
          ~Container();
          void initVariables(int* varType);
          bool evolution();

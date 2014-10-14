@@ -2,10 +2,6 @@
 \usepackage{amssymb, amsmath, amsthm, booktabs, thumbpdf}
 \newcommand{\argmin}{\operatorname{argmin}\displaylimits}
 
-%% for internal use
-\newcommand{\fixme}[1]{\emph{\marginpar{FIXME} (#1)}}
-\newcommand{\readme}[1]{\emph{\marginpar{README} (#1)}}
-
 %% Sweave/vignette information and metadata
 %% need no \usepackage{Sweave}
 \SweaveOpts{engine = R, eps = FALSE, keep.source = TRUE}
@@ -25,6 +21,10 @@
 \Shorttitle{\pkg{evtree}: Evolutionary Learning of Globally Optimal Trees in \proglang{R}}
 
 \Abstract{
+  This introduction to the \proglang{R} package \pkg{evtree} is a (slightly)
+  modified version of \cite{evtree}, published in the
+  \emph{Journal of Statistical Software}.
+
   Commonly used classification and regression tree methods like the CART
   algorithm are recursive partitioning methods that build the model in a forward
   stepwise search. Although this approach is known to be an efficient heuristic,
@@ -51,17 +51,16 @@
 
 \Address{
   Thomas Grubinger, Karl-Peter Pfeiffer\\
-  Innsbruck Medical University\\
   Department for Medical Statistics, Informatics and Health Economics\\
-  6020, Innsbruck, Austria\\
+  Innsbruck Medical University\\
+  6020 Innsbruck, Austria\\
   E-mail: \email{Thomas.Grubinger@scch.at}, \email{Karl-Peter.Pfeiffer@i-med.ac.at}\\
-  URL: \url{http://www.i-med.ac.at/msig/mitarbeiter/grubinger/}\\
-  \phantom{URL: }\url{http://www.i-med.ac.at/msig/mitarbeiter/pfeiffer/}\\
 
   Achim Zeileis \\
-  Universit\"at Innsbruck\\
   Department of Statistics\\
-  6020, Innsbruck, Austria\\
+  Faculty of Economics and Statistics\\
+  Universit\"at Innsbruck\\
+  6020 Innsbruck, Austria\\
   E-mail: \email{Achim.Zeileis@R-project.org}\\
   URL: \url{http://eeecon.uibk.ac.at/~zeileis/}
 }
@@ -351,7 +350,7 @@ solve difficult classification and regression tree problems.
 algorithms as a stochastic optimization method to build classification and
 regression trees. \cite{papagelis2001bdt} presented a classification tree
 algorithm and provided results on several datasets from the UCI machine learning
-repository \citep{Frank+Asuncion:2010}. Another method for the construction of
+repository \citep{Bache+Lichman:2013}. Another method for the construction of
 classification and regression trees via evolutionary algorithms was introduced by
 \cite{gray2008cta} and \cite{fan2005rta}, respectively.
 \cite{cantu2003inducing} used an evolutionary algorithm to induce so-called oblique
@@ -406,8 +405,6 @@ As pointed out in Section~\ref{got}, some elements $\theta \in \Theta$ are typic
 excluded in practice to satisfy minimal subsample size requirements.
 In the following, the term \emph{invalid node} refers to such excluded cases,
 not meeting sample size restrictions.
-
-\pagebreak %% FIXME
 
 \subsection{Initialization}
 \label{init}
@@ -920,8 +917,6 @@ function values may be found by subsequent runs of \code{evtree()}. Here, this
 problem is alleviated by restricting the maximal depth of the tree, yielding a
 clear solution.
 
-\pagebreak 
-
 \section{Performance comparison}
 \label{comp}
 
@@ -1007,7 +1002,7 @@ HDG0502$^\diamond$ & 8251 &  1 & 7 & 1 &   91  & -               \\
 \bottomrule
 \end{tabular}
 \caption{\label{tab:dataDescription} Description of the evaluated benchmark datasets. The datasets marked with
-  $*$ originate from the UCI machine learning repository \citep{Frank+Asuncion:2010} and are made available in the \pkg{evtree} package.
+  $*$ originate from the UCI machine learning repository \citep{Bache+Lichman:2013} and are made available in the \pkg{evtree} package.
   Datasets marked with $\#$ and $+$ are from the \proglang{R} packages \pkg{mlbench} \citep{mlbench} and
   \pkg{kernlab} \citep{kernlab}, respectively. The three real-world datasets from the Austrian DRG system are marked with $\diamond$.} 
 \end{table}
@@ -1124,7 +1119,7 @@ ciplot <- function(x, xlim = NULL, main = "", xlab = "", ylab = TRUE) {
   axis(2, at = 1:k, labels = ylab, las = 1, cex = 0.8)  
   axis(2, at = k + 1.5, labels = main, tick = FALSE, las = 1, outer = TRUE, cex.axis = 1.5, xpd = TRUE)
   mtext(xlab, side = 1, line = 3, xpd = TRUE)
-  if (dim(x) >= 17) abline(h = 5.5)
+  if (NROW(x) >= 17) abline(h = 5.5)
   abline(v = 0, lty = 2)  
   box()
 }
@@ -1219,12 +1214,13 @@ Disadvantages of the \code{evtree} algorithm are computation time and memory req
 
 Another important issue to be considered is the random nature of evolutionary algorithms. For larger datasets, frequently, considerably different solutions exist that yield a similar or even the same evaluation function value. Therefore, subsequent runs of \code{evtree} can result in very different tree structures. This is not a problem if the tree is intended only for predictive purposes, and it is also not a big issue for many decision and prognosis tasks. Typically, in such applications, the resulting model has to be accurate, compact, and meaningful in its interpretation, but the particular tree structure is of secondary importance. Examples of such applications include the presented marketing case study and the Austrian DRG system. In cases where a model is not meaningful in its interpretation, the possibility of constructing different trees can even be beneficial. However, if the primary goal is to interpret relationships in the data, based on the selected splits, the random nature of the algorithm has to be considered.
 
+\pagebreak
 
 \subsection{Artificial problem}
 \label{comp2}
 
 In this section we demonstrate the ability of \code{evtree} to solve an artificial problem that is difficult to solve for most recursive classification tree
-algorithms \citep{loh2009improving}. The data was simulated with $2000$ instances for both the training-set and the test-set. Predictor variables $X_1$ and
+algorithms \citep{loh2009improving}. The data was simulated with $2000$ instances for both the training set and the test set. Predictor variables $X_1$ and
 $X_2$ are simulated to be uniformly distributed in the interval $[0,4]$. The classes are distributed in alternating squares forming a $4 \times 4$ chessboard
 in the $(X_1, X_2)$-plane. One realization of the simulated data is shown in Figure~\ref{fig:chess}. Furthermore, variables $X_3$--$X_8$ are noise variables that are uniformly distributed on the interval [0, 1]. The ideal model for this problem only uses variables $X_1$ and $X_2$ and has 16 terminal nodes, whereas each terminal node comprises the observations that are in the region of one square. Two further simulations are done in the same way, but $5\%$ and $10\%$ percent of the class labels are randomly changed to the other class. 
 
@@ -1273,18 +1269,6 @@ plot(X2 ~ X1, data = chess44, xlim = c(0, 4), ylim = c(0, 4), pch = c(1, 4)[Y], 
   plotted on the $(X_1, X_2)$-plane. The two classes are indicated by black circles and gray crosses, respectively.}
 \end{figure}
 
-The results are summarized in Table~\ref{tab:resultsChessboard}. It can be seen that, in the absence of noise,
-\code{evtree} classifies $93.2\%$ of the instances correctly and requires $14.4$
-terminal nodes. \code{rpart} models, on the other hand, on average classify
-$69.1\%$ of the data points correctly and have $16.6$ terminal nodes.
-An average \code{ctree} model has only $1.1$ terminal nodes -- i.e., typically
-does not split at all (as expected in an unbiased forward selection) -- and
-consequently a classification accuracy of $49.9\%$. \code{J48} trees on average
-have $1.2$ nodes and classify $50.0\%$ of the datapoints correctly. In the
-presence of $5\%$ and $10\%$ noise, \code{evtree} classifies $89.0\%$ and
-$84.5\%$ of the data correctly but still performs clearly better than the other
-models. 
-
 <<chessboard-table, echo=FALSE, results=tex>>=
 library("xtable")
 load("./results/chessboard44_0.RData")
@@ -1328,13 +1312,15 @@ for(j in 1:ncol(chesstable_means)){
 }
 
 chesstable <- cbind(rbind("0\\%","5\\%","10\\%"), chesstable)
-colnames(chesstable)[1] = ""
+colnames(chesstable)[1] <- ""
+colnames(chesstable)[6:9] <- colnames(chesstable)[2:5]
 
 print(xtable(chesstable,
 caption = "Mean (and standard deviation) of accuracy and complexity for simulated $4 \\times 4$ chessboard examples.",
 caption.placement= "bottom",
-table.placement="t!",
+table.placement="b!",
 label= "tab:resultsChessboard"), 
+comment = FALSE,
 include.rownames = FALSE, allign= "rllllll", hline.after=NULL,
 sanitize.text.function = identity,
 add.to.row=list(pos=list(-1,-1, 0, 3), command=c(
@@ -1345,6 +1331,18 @@ c("\\multicolumn{1}{l}{Noise} & \\multicolumn{4}{l}{Accuracy}  & \\multicolumn{4
 )))
 )
 @
+
+The results are summarized in Table~\ref{tab:resultsChessboard}. It can be seen that, in the absence of noise,
+\code{evtree} classifies $93.2\%$ of the instances correctly and requires $14.4$
+terminal nodes. \code{rpart} models, on the other hand, on average classify
+$69.1\%$ of the data points correctly and have $16.6$ terminal nodes.
+An average \code{ctree} model has only $1.1$ terminal nodes -- i.e., typically
+does not split at all (as expected in an unbiased forward selection) -- and
+consequently a classification accuracy of $49.9\%$. \code{J48} trees on average
+have $1.2$ nodes and classify $50.0\%$ of the datapoints correctly. In the
+presence of $5\%$ and $10\%$ noise, \code{evtree} classifies $89.0\%$ and
+$84.5\%$ of the data correctly but still performs clearly better than the other
+models. 
 
 \section[Choice of evtree parameters]{Choice of \texttt{evtree} parameters}
 \label{param}
@@ -1483,7 +1481,7 @@ robustness of the default parameter choices.
 As in Section~\ref{comp}, \code{evtree} models are constrained to a minimum number of 
 7~observations per terminal node, 20~observations per internal node, and a maximum tree
 depth of~9. The analysis is based on 4 datasets (\textit{Statlog heart}, \textit{Statlog german credit}, 
-\textit{Spam}, and the \textit{4x4 Chessboard problem} with 5\%noise). Again, the analysis of each 
+\textit{Spam}, and the \textit{4x4 Chessboard problem} with 5\% noise). Again, the analysis of each 
 of the 4 datasets is based on 250~bootstrap samples. In Section~\ref{param_op}, \code{evtree}
 is simulated with a diverse set of variation operator probability choices. Section~\ref{param_ps}
 provides results for the choice of different population sizes. 
@@ -1514,7 +1512,7 @@ settings. Additionally, the results from a simulation with 10000 iterations is
 included, which provides an estimate of performance differences for the default
 setting.
 
-\begin{table}[b!]
+\begin{table}[t!]
 \centering
 \begin{tabular}{lrrrr}
 \toprule
@@ -1573,7 +1571,7 @@ correctly.
 
 In this subsection, \code{evtree} is simulated with population sizes between
 25 trees and 500 trees. The results of the simulation are illustrated in
-Figure~\ref{fig:param_operatorprob}. For the two smaller datasets
+Figure~\ref{fig:param_populationsize}. For the two smaller datasets
 \textit{Statlog heart} an \textit{Statlog German credit} the results are similar
 for all population sizes. In fact, the smallest population sizes (25 trees;
 \textit{Statlog heart}: $77.1\%$, \textit{Statlog German credit}: $72.2\%$) 

@@ -15,8 +15,8 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int *s
         this->data = data;
         this->performance = 999999;
         this->csplit = new int*[*this->maxCat];
-        this->weights = weights;
-	for (int i = 0; i < *this->maxCat; i++)
+		this->weights = weights;
+		for (int i = 0; i < *this->maxCat; i++)
             this->csplit[i] = new int[(*this->maxNode)];
         for (int v = 0; v < *this->maxNode; v++){
             for(int i = 0; i <  *this->maxCat; i++){
@@ -50,7 +50,7 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* m
         this->csplit = new int*[*this->maxCat];
         this->weights = weights;
         
-	for (int i = 0; i < *this->maxCat; i++)
+		for (int i = 0; i < *this->maxCat; i++)
             this->csplit[i] = new int[(*this->maxNode)];
         for (int v = 0; v < *this->maxNode; v++){
             for(int i = 0; i< *this->maxCat; i++){
@@ -60,13 +60,14 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* m
             this->splitP[v] = -999999;
             this->nodes[v] = NULL;
         }
-        this->splitV[0] = (rand()%(*this->nVariables-1));
+
+        this->splitV[0] = Tree::getUnifRandNumber(*this->nVariables-1);
         this->nodes[0] = NULL;
         this->initNode(0);
 
         if(variables[this->splitV[0]]->isCat == false){
               if((this->variables[this->splitV[0]]->nCats-1) > 1)
-                   this->splitP[0] = variables[this->splitV[0]]->sortedValues[(rand()%(this->variables[this->splitV[0]]->nCats-1))+1];
+                   this->splitP[0] = variables[this->splitV[0]]->sortedValues[getUnifRandNumber(this->variables[this->splitV[0]]->nCats-1)+1];
               else
                    this->splitP[0] = variables[this->splitV[0]]->sortedValues[0];
         }else{
@@ -74,10 +75,10 @@ Tree::Tree(int* nInstances, int* nVariables, double** data, int* weights, int* m
         }
         
         for(int i = 0; i <= 5000 && this->predictClass(*minBucket, *minSplit, false, 0) == false; i++){
-	         this->splitV[0] = (rand()%(*this->nVariables-1));
+	         this->splitV[0] = getUnifRandNumber(*this->nVariables-1);
              	 if(variables[this->splitV[0]]->isCat == false){
                 	 if((this->variables[this->splitV[0]]->nCats-1) > 1 )
-                      		 this->splitP[0] = variables[this->splitV[0]]->sortedValues[(rand()%(this->variables[this->splitV[0]]->nCats-1))+1];
+                      		 this->splitP[0] = variables[this->splitV[0]]->sortedValues[getUnifRandNumber(this->variables[this->splitV[0]]->nCats-1)+1];
                		 else
                       		 this->splitP[0] = variables[this->splitV[0]]->sortedValues[0];
             	 }else{
@@ -100,20 +101,23 @@ Tree::~Tree(){
 	delete [] splitP;
         splitP = NULL;
 	delete [] splitV;
-        splitV = NULL;
-        for (int i = 0; i < *this->maxCat; i++)
-            delete [] csplit[i];
-        delete [] csplit;
-        csplit = NULL;
-        variables = NULL;
-        data = NULL;
+    splitV = NULL;
+    for (int i = 0; i < *this->maxCat; i++)
+		delete [] csplit[i];
+    delete [] csplit;
+    csplit = NULL;
+    variables = NULL;
+    data = NULL;
 	maxNode = NULL;
-        maxCat = NULL;
-        nInstances = NULL;
-        nVariables = NULL;
-        weights = NULL;
+    maxCat = NULL;
+    nInstances = NULL;
+    nVariables = NULL;
+    weights = NULL;
 } // end ~Tree
 
+int Tree::getUnifRandNumber(int numberDistinctValues){
+	return ((int)floorf(unif_rand()*((double)numberDistinctValues)))%numberDistinctValues; // % for the case unif_rand gives exactly 1 
+}
 
 void Tree::initNode(int nodeNumber){
     // initializes a node
@@ -233,7 +237,7 @@ void Tree::randomizeCategories(int nodeNumber){
             this->csplit[i][nodeNumber] = 1;
         }else if(i == this->variables[*this->nodes[nodeNumber]->splitV]->nCats-1 && right == false){
             this->csplit[i][nodeNumber] = 3;
-        }else if(rand()%2 == 1){
+        }else if(getUnifRandNumber(2) == 1){
             this->csplit[i][nodeNumber] = 1;
             left = true;
         }else{

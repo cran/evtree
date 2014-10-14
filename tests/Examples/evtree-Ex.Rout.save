@@ -21,13 +21,6 @@ Type 'q()' to quit R.
 > library('evtree')
 Loading required package: partykit
 Loading required package: grid
-
-Attaching package: 'partykit'
-
-The following object is masked from 'package:grid':
-
-    depth
-
 > 
 > base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > cleanEx()
@@ -43,62 +36,44 @@ The following object is masked from 'package:grid':
 > 
 > ### ** Examples
 > 
-> ## data, packages, random seed
-> data("BBBClub", package = "evtree")
-> library("rpart")
-> set.seed(1090)
-> 
-> ## learn trees
-> ev <- evtree(choice ~ ., data = BBBClub, minbucket = 10, maxdepth = 2)
-> rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
-> ct <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
-Loading required package: Formula
-> 
-> ## visualization
-> plot(ev)
-> plot(rp)
-> plot(ct)
-> 
-> ## accuracy: misclassification rate
-> mc <- function(obj) 1 - mean(predict(obj) == BBBClub$choice)
-> c("evtree" = mc(ev), "rpart" = mc(rp), "ctree" = mc(ct))
-   evtree     rpart     ctree 
-0.2430769 0.2384615 0.2476923 
-> 
-> ## complexity: number of terminal nodes
-> c("evtree" = width(ev), "rpart" = width(rp), "ctree" = width(ct))
-evtree  rpart  ctree 
-     4      5      7 
-> 
-> ## compare structure of predictions
-> ftable(tab <- table(evtree = predict(ev), rpart  = predict(rp),
-+   ctree  = predict(ct), observed = BBBClub$choice))
-                   observed  no yes
-evtree rpart ctree                 
-no     no    no             799 223
-             yes             38  24
-       yes   no               0   0
-             yes             12  18
-yes    no    no               0   0
-             yes              0   0
-       yes   no              21  19
-             yes             30 116
-> 
-> ## compare customer predictions only (absolute, proportion correct)
-> sapply(c("evtree", "rpart", "ctree"), function(nam) {
-+   mt <- margin.table(tab, c(match(nam, names(dimnames(tab))), 4))
-+   c(abs = as.vector(rowSums(mt))[2],
-+     rel = round(100 * prop.table(mt, 1)[2, 2], digits = 3))
-+ })
-     evtree   rpart   ctree
-abs 186.000 216.000 238.000
-rel  72.581  70.833  66.387
+> ## Not run: 
+> ##D ## data, packages, random seed
+> ##D data("BBBClub", package = "evtree")
+> ##D library("rpart")
+> ##D set.seed(1090)
+> ##D 
+> ##D ## learn trees
+> ##D ev <- evtree(choice ~ ., data = BBBClub, minbucket = 10, maxdepth = 2)
+> ##D rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
+> ##D ct <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
+> ##D 
+> ##D ## visualization
+> ##D plot(ev)
+> ##D plot(rp)
+> ##D plot(ct)
+> ##D 
+> ##D ## accuracy: misclassification rate
+> ##D mc <- function(obj) 1 - mean(predict(obj) == BBBClub$choice)
+> ##D c("evtree" = mc(ev), "rpart" = mc(rp), "ctree" = mc(ct))
+> ##D 
+> ##D ## complexity: number of terminal nodes
+> ##D c("evtree" = width(ev), "rpart" = width(rp), "ctree" = width(ct))
+> ##D 
+> ##D ## compare structure of predictions
+> ##D ftable(tab <- table(evtree = predict(ev), rpart  = predict(rp),
+> ##D   ctree  = predict(ct), observed = BBBClub$choice))
+> ##D 
+> ##D ## compare customer predictions only (absolute, proportion correct)
+> ##D sapply(c("evtree", "rpart", "ctree"), function(nam) {
+> ##D   mt <- margin.table(tab, c(match(nam, names(dimnames(tab))), 4))
+> ##D   c(abs = as.vector(rowSums(mt))[2],
+> ##D     rel = round(100 * prop.table(mt, 1)[2, 2], digits = 3))
+> ##D })
+> ## End(Not run)
 > 
 > 
 > 
 > cleanEx()
-
-detaching 'package:Formula', 'package:rpart'
 
 > nameEx("ContraceptiveChoice")
 > ### * ContraceptiveChoice
@@ -348,27 +323,25 @@ heart_disease ~ age + sex + chest_pain_type + resting_blood_pressure +
 Fitted party:
 [1] root
 |   [2] thal in normal, fixed defect
-|   |   [3] age < 59
-|   |   |   [4] maximum_heart_rate < 161
-|   |   |   |   [5] sex in male: presence (n = 86, err = 18.6%)
-|   |   |   |   [6] sex in female
-|   |   |   |   |   [7] serum_colestoral < 309: absence (n = 19, err = 0.0%)
-|   |   |   |   |   [8] serum_colestoral >= 309: presence (n = 10, err = 0.0%)
-|   |   |   [9] maximum_heart_rate >= 161: absence (n = 62, err = 8.1%)
-|   |   [10] age >= 59
-|   |   |   [11] chest_pain_type in asymptomatic: presence (n = 94, err = 9.6%)
-|   |   |   [12] chest_pain_type in typical angina, atypical angina, non-anginal pain
-|   |   |   |   [13] sex in male: presence (n = 43, err = 18.6%)
-|   |   |   |   [14] sex in female: absence (n = 16, err = 0.0%)
-|   [15] thal in reversible defect: presence (n = 420, err = 6.0%)
+|   |   [3] oldpeak < 1.8
+|   |   |   [4] major_vessels < 1
+|   |   |   |   [5] age < 59: absence (n = 80, err = 6.2%)
+|   |   |   |   [6] age >= 59
+|   |   |   |   |   [7] serum_colestoral < 224: absence (n = 8, err = 0.0%)
+|   |   |   |   |   [8] serum_colestoral >= 224: presence (n = 45, err = 22.2%)
+|   |   |   [9] major_vessels >= 1
+|   |   |   |   [10] sex in male: presence (n = 87, err = 8.0%)
+|   |   |   |   [11] sex in female: absence (n = 19, err = 26.3%)
+|   |   [12] oldpeak >= 1.8: presence (n = 91, err = 12.1%)
+|   [13] thal in reversible defect: presence (n = 420, err = 6.0%)
 
-Number of inner nodes:    7
-Number of terminal nodes: 8
+Number of inner nodes:    6
+Number of terminal nodes: 7
 > table(predict(sht), StatlogHeart$heart_disease)
           
            absence presence
-  absence       92        1
-  presence      58      119
+  absence       97        2
+  presence      53      118
 > plot(sht)
 > 
 > 

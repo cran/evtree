@@ -1,7 +1,10 @@
 evtree <- function(formula, data, subset, na.action, weights, control = evtree.control(...), ...)
-{
-    ## original call
+{   
+	## original call
     ocall <- match.call()
+
+	## set random seed
+    if(!is.null(control$seed)) set.seed(control$seed)
 
     ## build model.frame
     if(missing(data)) data <- environment(formula)
@@ -147,8 +150,7 @@ evtree <- function(formula, data, subset, na.action, weights, control = evtree.c
                 as.integer(control$operatorprob[["psplit"]]),
                 as.integer(control$operatorprob[["pprune"]]),
                 as.integer(control$method),
-                as.double(control$alpha),
-		as.integer(control$seed)
+                as.double(control$alpha)
                 )
             return(out)
     }
@@ -171,7 +173,7 @@ evtree <- function(formula, data, subset, na.action, weights, control = evtree.c
      mtree$weights <- weights
      mtree$prediction <- out[[6]]+1
      mtree$maxCat <- maxCat
-     mtree$seed <- out[[22]]
+     mtree$seed <- control$seed
      init <- .initializeNode(mtree)
      node <- init[[1]]
      gid  <- init[[2]]

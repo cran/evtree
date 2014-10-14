@@ -50,6 +50,7 @@ A data frame containing 1,300 observations on 11 variables.
 }
 
 \examples{
+\dontrun{
 ## data, packages, random seed
 data("BBBClub", package = "evtree")
 library("rpart")
@@ -83,5 +84,5 @@ sapply(c("evtree", "rpart", "ctree"), function(nam) {
     rel = round(100 * prop.table(mt, 1)[2, 2], digits = 3))
 })
 }
-
+}
 \keyword{datasets}
