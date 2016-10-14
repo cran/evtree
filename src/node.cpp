@@ -1,16 +1,16 @@
 #include "node.h"
 
-Node::Node(int pos, int* splitV, double* splitP, int** csplit, Node* leftChild, Node* rightChild, double** data,
-int* nInst, int* nVar, variable** variables){
-    this->pos = pos;
-    this->splitV = splitV;
-    this->splitP = splitP;
-    this->nInst = nInst;
-    this->nVar = nVar;
-    this->data = data;
-    this->leftChild = leftChild;
-    this->rightChild = rightChild;
-    this->variables = variables;
+Node::Node(int pos_, int* splitV_, double* splitP_, int** csplit_, Node* leftChild_, Node* rightChild_, double** data_,
+int* nInst_, int* nVar_, variable** variables_){
+    this->pos = pos_;
+    this->splitV = splitV_;
+    this->splitP = splitP_;
+    this->nInst = nInst_;
+    this->nVar = nVar_;
+    this->data = data_;
+    this->leftChild = leftChild_;
+    this->rightChild = rightChild_;
+    this->variables = variables_;
     this->localClassification = new int[*this->nInst];
     for(int i = 0; i < *this->nInst; i++)
         this->localClassification[i] = 0;
@@ -20,8 +20,8 @@ int* nInst, int* nVar, variable** variables){
     this->predictionInternalNode = 0;
     this->predictionLeftTerminal = 0;
     this->predictionRightTerminal = 0;
-    this->nClassesDependendVar = &variables[*this->nVar-1]->nCats;
-    this->csplit = csplit;
+    this->nClassesDependendVar = &variables_[*this->nVar-1]->nCats;
+    this->csplit = csplit_;
 } // end Node
 
 

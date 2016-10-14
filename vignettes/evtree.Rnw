@@ -718,7 +718,7 @@ example is provided by \cite{lilien2004} in the \textit{Bookbinder's Book Club}
 marketing case study about a (fictitious) American book club. In this case study, a brochure of the book
 ``The Art History of Florence'' was sent to 20,000~customers, 1,806~of
 which bought the book. The dataset contains a subsample of 1,300~customers
-with 10~exploratory variables (see Table~\ref{tab:BBBClubDescription}) for
+with 10~explanatory variables (see Table~\ref{tab:BBBClubDescription}) for
 building a predictive model of customer choice. 
 
 \begin{table}[b!]

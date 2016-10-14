@@ -1,4 +1,5 @@
 #include "node.h"
+#include <Rmath.h>
 using namespace std;
 
 class Tree{

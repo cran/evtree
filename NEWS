@@ -1,3 +1,10 @@
+Changes in Version 1.0-1
+
+  o Replaced math.h functions 'max', 'min' and 'round' with  
+	the appropriate Rmath.h functions ('imax2', 'imin2', 'fmax2', 'fmin2' and 'fround').
+	
+  o Added importFrom("stats", "model.weights", "runif", "var") to NAMESPACE file.
+
 Changes in Version 1.0-0
 
   o New release accompanying the paper about evtree in the Journal of

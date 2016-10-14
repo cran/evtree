@@ -32,7 +32,7 @@ A data frame containing 19,020 observations on 11 variables.
 	R. K. Bock,
 	Major Atmospheric Gamma Imaging Cherenkov Telescope project (MAGIC),        
 	rkb '@' mail.cern.ch,
-	\url{http://www.magic.mppmu.mpg.de}
+	\url{https://magic.mppmu.mpg.de/}
 
 	and was donated by:
 

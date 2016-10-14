@@ -40,7 +40,7 @@ Container::Container(int* R_nInstances, int* R_nVariables, int *R_varType, doubl
     this->probSplit = *R_pSplit + this->probMutateMinor;
     this->probPrune = *R_pPrune + this->probSplit;
     this->probCrossover = *R_pCrossover + this->probPrune;
-    this->elitismRange = max((int)ceil((double)(this->nTrees/20.0)),2);
+    this->elitismRange = imax2((int)ceil((double)(this->nTrees/20.0)),2);
     this->nTrees +=  this->elitismRange;
     this->method = *R_method;
     this->elitismList = new int[this->elitismRange];
@@ -706,7 +706,7 @@ bool Container::changeRandomCategories(int treeNumber, int nodeNumber){
             }
         }
     }
-    int changes = max(1,Tree::getUnifRandNumber((int) variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1));
+    int changes = imax2(1,Tree::getUnifRandNumber((int) variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1));
     int i = 0;
     int changedCat;
      while(changes > 0 && i < changes*3){
@@ -796,11 +796,11 @@ bool Container::randomSplitPoint(int treeNumber, int nodeNumber){
             for(int i = 0; i < 12; i++){
          	   randomNumber += (((double) Tree::getUnifRandNumber(1000))+1.) / 1000.0;
             }
-            randomSplitPoint = (int)round(((randomNumber-6)*(max-min)/2.0)+( (max+min)/2.0 ));
+            randomSplitPoint = (int)fround(((randomNumber-6)*(max-min)/2.0)+( (max+min)/2.0 ),5);
         }      
        
         if(randomSplitPoint < min || randomSplitPoint > max){
-              randomSplitPoint = (int)round((min+max)/2.0);
+              randomSplitPoint = (int)fround((min+max)/2.0,5);
         }
 
         this->trees[treeNumber]->splitP[nodeNumber] = this->variables[ abs(this->trees[treeNumber]->splitV[nodeNumber]) ]->sortedValues[randomSplitPoint] ;
@@ -827,7 +827,7 @@ bool Container::changeSplitPoint(int treeNumber, int nodeNumber){
              }
         }
 
-        int randomNumber= max(Tree::getUnifRandNumber((int)variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1), 1);
+        int randomNumber= imax2(Tree::getUnifRandNumber((int)variables[ this->trees[treeNumber]->splitV[nodeNumber] ]->nCats/10+1), 1);
         if(Tree::getUnifRandNumber(2) == 1)
               randomNumber = -randomNumber;
         if(randomNumber > 0 && oldPos+randomNumber > maxi)
@@ -839,7 +839,7 @@ bool Container::changeSplitPoint(int treeNumber, int nodeNumber){
         int randomSplitPoint= oldPos+randomNumber;
 
         if(randomSplitPoint < mini || randomSplitPoint > maxi){
-            randomSplitPoint = (int)round((mini+maxi)/2.0);
+            randomSplitPoint = (int)fround((mini+maxi)/2.0,5);
         }
         this->trees[treeNumber]->splitP[nodeNumber] = this->variables[ abs(this->trees[treeNumber]->splitV[nodeNumber]) ]->sortedValues[randomSplitPoint];
     return true;

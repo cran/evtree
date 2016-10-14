@@ -6,3 +6,4 @@ export(
   "evtree",
   "evtree.control"
 )
+importFrom("stats", "model.weights", "runif", "var")

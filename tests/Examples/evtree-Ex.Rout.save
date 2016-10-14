@@ -1,11 +1,13 @@
 
-R Under development (unstable) (2013-11-25 r64296) -- "Unsuffered Consequences"
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -322,26 +324,26 @@ heart_disease ~ age + sex + chest_pain_type + resting_blood_pressure +
 
 Fitted party:
 [1] root
-|   [2] thal in normal, fixed defect
-|   |   [3] oldpeak < 1.8
-|   |   |   [4] major_vessels < 1
-|   |   |   |   [5] age < 59: absence (n = 80, err = 6.2%)
-|   |   |   |   [6] age >= 59
-|   |   |   |   |   [7] serum_colestoral < 224: absence (n = 8, err = 0.0%)
-|   |   |   |   |   [8] serum_colestoral >= 224: presence (n = 45, err = 22.2%)
-|   |   |   [9] major_vessels >= 1
-|   |   |   |   [10] sex in male: presence (n = 87, err = 8.0%)
-|   |   |   |   [11] sex in female: absence (n = 19, err = 26.3%)
-|   |   [12] oldpeak >= 1.8: presence (n = 91, err = 12.1%)
-|   [13] thal in reversible defect: presence (n = 420, err = 6.0%)
+|   [2] oldpeak < 2.8
+|   |   [3] major_vessels < 1
+|   |   |   [4] thal in normal, fixed defect
+|   |   |   |   [5] age < 59
+|   |   |   |   |   [6] oldpeak < 1.8: absence (n = 80, err = 6.2%)
+|   |   |   |   |   [7] oldpeak >= 1.8: presence (n = 12, err = 16.7%)
+|   |   |   |   [8] age >= 59
+|   |   |   |   |   [9] serum_colestoral < 234: absence (n = 12, err = 0.0%)
+|   |   |   |   |   [10] serum_colestoral >= 234: presence (n = 45, err = 22.2%)
+|   |   |   [11] thal in reversible defect: presence (n = 128, err = 14.1%)
+|   |   [12] major_vessels >= 1: presence (n = 355, err = 8.5%)
+|   [13] oldpeak >= 2.8: presence (n = 118, err = 2.5%)
 
 Number of inner nodes:    6
 Number of terminal nodes: 7
 > table(predict(sht), StatlogHeart$heart_disease)
           
            absence presence
-  absence       97        2
-  presence      53      118
+  absence       87        1
+  presence      63      119
 > plot(sht)
 > 
 > 
