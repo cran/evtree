@@ -43,7 +43,7 @@ evtree <- function(formula, data, subset, na.action, weights, control = evtree.c
     mf <- mf[, c(2:ncol(mf), 1L), drop = FALSE]
     if(length(unique(mf[,ncol(mf)])) == 1L)
         stop('dependent variable has no variation')
-    mf <- mf[,sapply(sapply(mf, unique), length) > 1L] ## drop variables with only one level
+    mf <- mf[, sapply(mf, function(var) length(unique(var))) > 1L] ## drop variables with only one level
     if(is.null(dim(mf)))
         stop('independent variables are all constant')
 

@@ -13,7 +13,7 @@ new applicants present a \emph{good} or \emph{bad} credit risk.
 \format{
 A data frame containing 1,000 observations on 21 variables.
 \describe{
-  \item{status}{factor variable indicating the status of the existing checking account, with levels \code{... < 100 DM}, \code{0 <= ... < 200 DM}, \code{... >= 200 DM/salary for at least 1 year} and \code{no checking account}.}
+  \item{status}{factor variable indicating the status of the existing checking account, with levels \code{... < 0 DM}, \code{0 <= ... < 200 DM}, \code{... >= 200 DM/salary for at least 1 year} and \code{no checking account}.}
   \item{duration}{duration in months.}  
    \item{credit_history}{factor variable indicating credit history, with levels \code{no credits taken/all credits paid back duly}, \code{all credits at this bank paid back duly},  \code{existing credits paid back duly till now}, \code{delay in paying off in the past} and \code{critical account/other credits existing}.}    
    \item{purpose}{factor variable indicating the credit's purpose, with levels \code{car (new)}, \code{car (used)}, \code{furniture/equipment}, \code{radio/television}, \code{domestic appliances}, \code{repairs}, \code{education},  \code{retraining}, \code{business} and \code{others}.}  

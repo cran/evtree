@@ -1,13 +1,11 @@
 
-R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+R version 3.3.2 (2016-10-31) -- "Sincere Pumpkin Patch"
 Copyright (C) 2016 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -23,6 +21,8 @@ Type 'q()' to quit R.
 > library('evtree')
 Loading required package: partykit
 Loading required package: grid
+Loading required package: libcoin
+Loading required package: mvtnorm
 > 
 > base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > cleanEx()
@@ -76,7 +76,6 @@ Loading required package: grid
 > 
 > 
 > cleanEx()
-
 > nameEx("ContraceptiveChoice")
 > ### * ContraceptiveChoice
 > 
@@ -138,7 +137,7 @@ Loading required package: grid
 > data("GermanCredit")
 > summary(GermanCredit)
                                         status       duration   
- ... < 100 DM                              :274   Min.   : 4.0  
+ ... < 0 DM                                :274   Min.   : 4.0  
  0 <= ... < 200 DM                         :269   1st Qu.:12.0  
  ... >= 200 DM / salary for at least 1 year: 63   Median :18.0  
  no checking account                       :394   Mean   :20.9  
@@ -384,7 +383,10 @@ Number of terminal nodes: 3
 [1] 321.8798
 > 
 > ## classification
+> ## (note that different equivalent "perfect" splits for the setosa species
+> ## in the iris data may be found on different architectures/systems)
 > ev_iris <- evtree(Species ~ .,data = iris)
+> ## IGNORE_RDIFF_BEGIN
 > ev_iris
 
 Model formula:
@@ -401,6 +403,7 @@ Fitted party:
 
 Number of inner nodes:    3
 Number of terminal nodes: 4
+> ## IGNORE_RDIFF_END
 > plot(ev_iris)
 > table(predict(ev_iris), iris$Species)
             
@@ -417,7 +420,7 @@ Number of terminal nodes: 4
 > ###
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  50.428 0.156 50.632 0 0 
+Time elapsed:  6.392 0.028 6.424 0 0 
 > grDevices::dev.off()
 null device 
           1 

@@ -1,9 +1,19 @@
+Changes in Version 1.0-2
+
+  o Fixed the setup for the model.frame which did not work if all variables
+    (including the response) were continuous and contained no ties.
+	
+  o Fixed incorrect factor level for "status" variable in the GermanCredit 
+	data. "... < 100 DM" should be "... < 0 DM".
+
+	
 Changes in Version 1.0-1
 
-  o Replaced math.h functions 'max', 'min' and 'round' with  
-	the appropriate Rmath.h functions ('imax2', 'imin2', 'fmax2', 'fmin2' and 'fround').
+  o Replaced math.h functions 'max', 'min' and 'round' with the appropriate
+    Rmath.h functions ('imax2', 'imin2', 'fmax2', 'fmin2' and 'fround').
 	
-  o Added importFrom("stats", "model.weights", "runif", "var") to NAMESPACE file.
+  o Added importFrom("stats", "model.weights", "runif", "var") in NAMESPACE.
+
 
 Changes in Version 1.0-0
 
