@@ -116,7 +116,7 @@ Tree::~Tree(){
 } // end ~Tree
 
 int Tree::getUnifRandNumber(int numberDistinctValues){
-	return ((int)floorf(((float)unif_rand())*((float)numberDistinctValues)))%numberDistinctValues; // % for the case unif_rand gives exactly 1 
+	return ((int)std::floor(((float)unif_rand())*((float)numberDistinctValues)))%numberDistinctValues; // % for the case unif_rand gives exactly 1 
 }
 
 void Tree::initNode(int nodeNumber){
@@ -252,11 +252,11 @@ void Tree::randomizeCategories(int nodeNumber){
 bool Tree::calculateTotalCosts(int method, double alpha, int sumWeights, double populationMSE){
      // calculates tree quality
     if(method == 1){
-       this->performance = 2.0*(((double) sumWeights)-this->calculateTotalMC(0)) + alpha*(this->nNodes+1.0)*log(((double)sumWeights));
+		this->performance = 2.0*(((double) sumWeights)-this->calculateTotalMC(0)) + alpha*(this->nNodes+1.0)*std::log(((double)sumWeights));
     }else{
-               double SMSE = fmax2(this->calculateTotalSE(0)/(populationMSE), 0.001);
+		double SMSE = std::max(this->calculateTotalSE(0)/(populationMSE), 0.001);
                this->performance = (
-                  ((double) sumWeights)*log(SMSE)+alpha*4.0*log(((double) sumWeights))*((double)this->nNodes+2.0)
+				   ((double) sumWeights)*log(SMSE)+alpha*4.0*std::log(((double) sumWeights))*((double)this->nNodes+2.0)
                +  ((double) sumWeights)*7.0  // constant such that formula is alway positive
                );
     }
