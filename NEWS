@@ -1,9 +1,16 @@
+Changes in Version 1.0-4
+
+  o CRAN checks turned up problems in C++ code on Solaris.
+    These are fixed now.
+
+	
 Changes in Version 1.0-3
 
-  o Replaced deprecated Rmath.h functions 'floorf', 'imax2', 'imin2', 'fmax2', 'fmin2'
-	with the appropriate functions from C++11.  
+  o Replaced deprecated Rmath.h functions 'floorf', 'imax2', 'imin2', 
+    'fmax2', 'fmin2' with the appropriate functions from C++11.  
 	
-  o Added registration of native routines using 'R_registerRoutines' and 'R_useDynamicSymbols'. 	
+  o Added registration of native routines using 'R_registerRoutines' 
+    and 'R_useDynamicSymbols'. 	
 	
 
 Changes in Version 1.0-2

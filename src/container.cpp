@@ -263,7 +263,7 @@ double Container::pruneNode(int treeNumber){
         if(nodeNumber <= 0)
             return -1;
 
-	int parent= (int) std::floor((nodeNumber-1)/2);
+	int parent= (int) std::floor((double) ((nodeNumber-1)/2));
 	int oldSplitV = this->trees[treeNumber]->splitV[nodeNumber];
 	double oldSplitP = this->trees[treeNumber]->splitP[nodeNumber];
 	this->trees[treeNumber]->splitV[nodeNumber] = -999999;
@@ -295,9 +295,9 @@ double Container::pruneNode(int treeNumber){
         }else if(accept == -1){ // reverse prune due to performance reasons
             this->trees[treeNumber]->nNodes++;
             if(nodeNumber%2 == 0 ) {// add Child back to parent
-                    this->trees[treeNumber]->nodes[(int) std::floor((nodeNumber-1) / 2)]->rightChild = this->trees[treeNumber]->nodes[nodeNumber];
+                    this->trees[treeNumber]->nodes[(int) std::floor((double) ((nodeNumber-1) / 2))]->rightChild = this->trees[treeNumber]->nodes[nodeNumber];
             }else{
-                    this->trees[treeNumber]->nodes[(int) std::floor((nodeNumber-1) / 2)]->leftChild = this->trees[treeNumber]->nodes[nodeNumber];
+                    this->trees[treeNumber]->nodes[(int) std::floor((double) ((nodeNumber-1) / 2))]->leftChild = this->trees[treeNumber]->nodes[nodeNumber];
             }
             this->trees[treeNumber]->splitV[nodeNumber] = oldSplitV;
             this->trees[treeNumber]->splitP[nodeNumber] = oldSplitP;
@@ -326,7 +326,7 @@ int Container::pruneAllNodes(int treeNumber){
     oldPerformance = this->trees[treeNumber]->performance;
         if(this->trees[treeNumber]->nNodes > 2){
             for(int nodeNumber = 1; nodeNumber*2+2 < this->maxNode; nodeNumber++){
-                int parent = (int) std::floor((nodeNumber-1)/2);
+                int parent = (int) std::floor((double) ((nodeNumber-1)/2));
                 if( this->trees[treeNumber]->splitV[nodeNumber] >= 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+1] < 0 &&
                     this->trees[treeNumber]->splitV[nodeNumber*2+2] < 0 && parent >= 0){
@@ -419,12 +419,12 @@ double Container::splitNode(int treeNumber){
                         }
 
                         if(terminalNode % 2 == 0 ){ // add child to parent
-                                this->trees[treeNumber]->nodes[(int) std::floor((terminalNode-1)/2) ]->rightChild = this->trees[treeNumber]->nodes[terminalNode];
+                                this->trees[treeNumber]->nodes[(int) std::floor((double) ((terminalNode-1)/2)) ]->rightChild = this->trees[treeNumber]->nodes[terminalNode];
                         }else{
-                                this->trees[treeNumber]->nodes[(int) std::floor((terminalNode-1)/2) ]->leftChild = this->trees[treeNumber]->nodes[terminalNode];
+                                this->trees[treeNumber]->nodes[(int) std::floor((double) ((terminalNode-1)/2)) ]->leftChild = this->trees[treeNumber]->nodes[terminalNode];
                         }
-                        flagValid = this->evaluateTree(treeNumber, false, (int) std::floor((terminalNode-1)/2) ) ;
-                    }
+                        flagValid = this->evaluateTree(treeNumber, false, (int) std::floor((double) ((terminalNode-1)/2)) ) ;
+                    } 
                 }
             }
             
@@ -439,7 +439,7 @@ double Container::splitNode(int treeNumber){
                }else{
                       this->trees[treeNumber]->splitV[terminalNode] = -999999;
                }
-               if(this->evaluateTree(treeNumber, false , (int) std::floor((terminalNode - 1) / 2) ) == false) {
+               if(this->evaluateTree(treeNumber, false , (int) std::floor((double)((terminalNode - 1) / 2)) ) == false) {
                       // cout << "warning: invalid tree is replaced by a random tree (10) " << endl;
                       this->overwriteTree(treeNumber);
                       return -10;
@@ -791,9 +791,9 @@ bool Container::randomSplitPoint(int treeNumber, int nodeNumber){
 
         int localInstances = 0;
         if(nodeNumber%2 == 0 ){ // add Child to parent and remove number of terminal instances
-             localInstances = this->trees[treeNumber]->nodes[(int) std::floor((nodeNumber-1)/2) ]->sumRightLocalWeights;
+             localInstances = this->trees[treeNumber]->nodes[(int) std::floor((double) ((nodeNumber-1)/2)) ]->sumRightLocalWeights;
         }else{
-             localInstances = this->trees[treeNumber]->nodes[(int) std::floor((nodeNumber-1)/2) ]->sumLeftLocalWeights;
+             localInstances = this->trees[treeNumber]->nodes[(int) std::floor((double) ((nodeNumber-1)/2)) ]->sumLeftLocalWeights;
         }
         if(localInstances < this->minSplit)
             return false;
@@ -808,11 +808,11 @@ bool Container::randomSplitPoint(int treeNumber, int nodeNumber){
             for(int i = 0; i < 12; i++){
          	   randomNumber += (((double) Tree::getUnifRandNumber(1000))+1.) / 1000.0;
             }
-            randomSplitPoint = (int)(round((((randomNumber-6)*(max-min)/2.0)+( (max+min)/2.0))*10000))/10000;
+            randomSplitPoint = (int)(std::floor((double)(((randomNumber-6)*(max-min)/2.0+((max+min)/2.0))*10000+0.5)))/10000;
         }      
        
         if(randomSplitPoint < min || randomSplitPoint > max){
-              randomSplitPoint = (int)round(((min+max)/2.0)*10000)/10000;
+              randomSplitPoint = (int)std::floor((double)(((min+max)/2.0)*10000+0.5))/10000;
         }
 
         this->trees[treeNumber]->splitP[nodeNumber] = this->variables[ std::abs(this->trees[treeNumber]->splitV[nodeNumber]) ]->sortedValues[randomSplitPoint] ;
@@ -851,7 +851,7 @@ bool Container::changeSplitPoint(int treeNumber, int nodeNumber){
         int randomSplitPoint= oldPos+randomNumber;
 
         if(randomSplitPoint < mini || randomSplitPoint > maxi){
-            randomSplitPoint = (int)round(((mini+maxi)/2.0)*10000)/10000;
+            randomSplitPoint = (int)std::floor((double)(((mini+maxi)/2.0)*10000+0.5))/10000;
         }
         this->trees[treeNumber]->splitP[nodeNumber] = this->variables[ std::abs(this->trees[treeNumber]->splitV[nodeNumber]) ]->sortedValues[randomSplitPoint];
     return true;

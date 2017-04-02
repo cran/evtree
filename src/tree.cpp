@@ -116,7 +116,7 @@ Tree::~Tree(){
 } // end ~Tree
 
 int Tree::getUnifRandNumber(int numberDistinctValues){
-	return ((int)std::floor(((float)unif_rand())*((float)numberDistinctValues)))%numberDistinctValues; // % for the case unif_rand gives exactly 1 
+	return ((int)std::floor(((double)unif_rand())*((double)numberDistinctValues)))%numberDistinctValues; // % for the case unif_rand gives exactly 1 
 }
 
 void Tree::initNode(int nodeNumber){
