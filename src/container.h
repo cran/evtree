@@ -1,4 +1,3 @@
-#include <cmath>
 #include <iostream>
 #include <Rinternals.h>
 #include <R_ext/Utils.h>

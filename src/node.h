@@ -1,5 +1,6 @@
 #include <iostream>
 #include <R.h>
+#include <cmath>
 #include <Rinternals.h>
 #include "variable.h"
 #define pi 3.14159
