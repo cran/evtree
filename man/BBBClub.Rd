@@ -58,7 +58,7 @@ set.seed(1090)
 
 ## learn trees
 ev <- evtree(choice ~ ., data = BBBClub, minbucket = 10, maxdepth = 2)
-rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
+rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10, model = TRUE))
 ct <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
 
 ## visualization

@@ -25,7 +25,7 @@ int* nInst_, int* nVar_, variable** variables_){
 } // end Node
 
 
-int Node::partition( int* classification, int* weights, variable** variables, int* nNodes, int minBucket, int minSplit ){
+int Node::partition( int* classification, int* weights, variable** variables_, int* nNodes, int minBucket, int minSplit ){
     // assigns instances to belong to the right or the left child node
     for(int i = 0; i < *this->nInst; i++)
             this->localClassification[i] = classification[i];
@@ -36,8 +36,8 @@ int Node::partition( int* classification, int* weights, variable** variables, in
         for(int i = 0; i < *this->nInst; i++){
             if(classification[i] == this->pos){
                 flag = false;
-                for(int k = 0; k < variables[ *this->splitV]->nCats && flag == false ; k++){
-                    if( variables[*this->splitV ]->sortedValues[k] == this->data[i][*this->splitV] ){
+                for(int k = 0; k < variables_[ *this->splitV]->nCats && flag == false ; k++){
+                    if( variables_[*this->splitV ]->sortedValues[k] == this->data[i][*this->splitV] ){
                        if( this->csplit[k][this->pos] == 1 ){
                            classification[i] = (this->pos)*2+1;
                            this->localClassification[i] = classification[i];
@@ -52,7 +52,7 @@ int Node::partition( int* classification, int* weights, variable** variables, in
                }
            }
        }
-    }else if( variables[*this->splitV]->isCat == false){  // numeric split-variable
+    }else if( variables_[*this->splitV]->isCat == false){  // numeric split-variable
         for(int i = 0; i < *this->nInst; i++){
             if(classification[i] == this->pos){
                     if( (double)this->data[i][*this->splitV ] < (double)*this->splitP){
@@ -76,10 +76,10 @@ int Node::partition( int* classification, int* weights, variable** variables, in
     // recursive call of partition until there are no further internal nodes
     int temp1 = -1, temp2 = -1;
     if( this->leftChild != NULL){
-       temp1 = this->leftChild->partition(classification, weights, variables, nNodes, minBucket, minSplit);
+       temp1 = this->leftChild->partition(classification, weights, variables_, nNodes, minBucket, minSplit);
     }
     if( this->rightChild != NULL){
-       temp2 = this->rightChild->partition(classification, weights, variables, nNodes, minBucket, minSplit);
+       temp2 = this->rightChild->partition(classification, weights, variables_, nNodes, minBucket, minSplit);
     }
 
     if( temp1 == -2 || temp2 == -2){

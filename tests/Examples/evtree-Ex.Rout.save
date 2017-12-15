@@ -46,7 +46,7 @@ Loading required package: mvtnorm
 > ##D 
 > ##D ## learn trees
 > ##D ev <- evtree(choice ~ ., data = BBBClub, minbucket = 10, maxdepth = 2)
-> ##D rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
+> ##D rp <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10, model = TRUE))
 > ##D ct <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
 > ##D 
 > ##D ## visualization
