@@ -1,8 +1,8 @@
 Package: evtree
 Title: Evolutionary Learning of Globally Optimal Trees
-Version: 1.0-6
-Date: 2017-12-15
-Authors@R: c(person(given = "Thomas", family = "Grubinger", role = c("aut", "cre"), email = "Thomas.Grubinger@scch.at"),
+Version: 1.0-7
+Date: 2018-05-22
+Authors@R: c(person(given = "Thomas", family = "Grubinger", role = c("aut", "cre"), email = "ThomasGrubinger@gmail.com"),
              person(given = "Achim", family = "Zeileis", role = "aut", email = "Achim.Zeileis@R-project.org",
                     comment = c(ORCID = "0000-0003-0918-3766")),
              person(given = "Karl-Peter", family = "Pfeiffer", role = "aut", email = "Karl-Peter.Pfeiffer@i-med.ac.at"))	 
@@ -22,13 +22,13 @@ Suggests: Formula, kernlab, lattice, mlbench, multcomp, party, rpart,
 LazyData: yes
 License: GPL-2 | GPL-3
 Author: Thomas Grubinger [aut, cre],
-  Achim Zeileis [aut] (0000-0003-0918-3766),
+  Achim Zeileis [aut] (<https://orcid.org/0000-0003-0918-3766>>),
   Karl-Peter Pfeiffer [aut]
-Maintainer: Thomas Grubinger <Thomas.Grubinger@scch.at>
+Maintainer: Thomas Grubinger <ThomasGrubinger@gmail.com>
 Repository: CRAN
 Repository/R-Forge/Project: partykit
-Repository/R-Forge/Revision: 1881
-Repository/R-Forge/DateTimeStamp: 2017-12-15 08:20:53
-Date/Publication: 2017-12-15 12:06:04 UTC
+Repository/R-Forge/Revision: 2173
+Repository/R-Forge/DateTimeStamp: 2018-05-22 14:59:45
+Date/Publication: 2018-05-23 07:08:15 UTC
 NeedsCompilation: yes
-Packaged: 2017-12-15 08:26:09 UTC; rforge
+Packaged: 2018-05-22 15:16:17 UTC; rforge

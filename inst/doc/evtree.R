@@ -36,8 +36,8 @@ plot(X2 ~ X1, data = chess22, xlim = c(0, 2), ylim = c(0, 2), pch = c(1, 4)[Y], 
 ###################################################
 ## data("BBBClub", package = "evtree")
 ## library("rpart")
-## rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
-## rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10,
+## rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10), model = TRUE)
+## rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10, model = TRUE,
 ##   maxdepth = 2))
 ## ct  <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
 ## ct2 <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99,
@@ -61,8 +61,8 @@ load("BBBClub-trees.rda")
 } else {
 data("BBBClub", package = "evtree")
 library("rpart")
-rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
-rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10,
+rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10), model = TRUE)
+rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10, model = TRUE,
   maxdepth = 2))
 ct  <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
 ct2 <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99,

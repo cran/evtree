@@ -772,8 +772,8 @@ in Figure~\ref{fig:example_rpart_ctree}.
 <<BBBClub-rpart-ctree, echo=TRUE, eval=FALSE>>=
 data("BBBClub", package = "evtree")
 library("rpart")
-rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10))
-rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10,
+rp  <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10), model = TRUE)
+rp2 <- as.party(rpart(choice ~ ., data = BBBClub, minbucket = 10, model = TRUE,
   maxdepth = 2))
 ct  <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99)
 ct2 <- ctree(choice ~ ., data = BBBClub, minbucket = 10, mincrit = 0.99,
