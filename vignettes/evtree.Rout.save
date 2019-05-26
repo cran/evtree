@@ -2,11 +2,15 @@
 > options(prompt = "R> ", continue = "+  ", width = 70, 
 +     useFancyQuotes = FALSE)
 
+> suppressWarnings(RNGversion("3.5.2"))
+
 > library("rpart")
 
 > library("evtree")
 Loading required package: partykit
 Loading required package: grid
+Loading required package: libcoin
+Loading required package: mvtnorm
 
 > library("lattice")
 
@@ -56,7 +60,6 @@ Number of terminal nodes: 4
 + } else {
 +     data("BBBClub", package = "evtree")
 +     library(" ..." ... [TRUNCATED] 
-Loading required package: Formula
 
 > plot(rp)
 
@@ -96,7 +99,7 @@ Number of terminal nodes: 4
 +     `evaluation function` = evalfun(obj))), digits = 3)
                      evtree   rpart   ctree  rpart2  ctree2
 misclassification     0.243   0.238   0.248   0.262   0.255
-evaluation function 660.680 655.851 694.191 701.510 692.680
+evaluation function 660.680 655.851 701.361 701.510 692.680
 
 > ftable(tab <- table(evtree = predict(ev), rpart = predict(rp), 
 +     ctree = predict(ct), observed = BBBClub$choice))
@@ -140,9 +143,16 @@ rel  72.581  70.833  66.387
 > r$dssamp <- r$ds:r$samp
 
 > library("multcomp")
-Loading required package: mvtnorm
 Loading required package: survival
-Loading required package: splines
+Loading required package: TH.data
+Loading required package: MASS
+
+Attaching package: 'TH.data'
+
+The following object is masked from 'package:MASS':
+
+    geyser
+
 
 > cstats <- function(alg = "evtree", value = "accuracy", 
 +     data = r) {
@@ -427,4 +437,4 @@ Loading required package: splines
  *** Run successfully completed ***
 > proc.time()
    user  system elapsed 
- 48.704   0.140  48.860 
+  23.28    0.57   24.04 

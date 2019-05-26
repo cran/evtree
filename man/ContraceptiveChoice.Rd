@@ -44,6 +44,7 @@ Lim, T.-S., Loh, W.-Y. & Shih, Y.-S. (1999). A Comparison of Prediction Accuracy
 data("ContraceptiveChoice")
 summary(ContraceptiveChoice)
 \dontrun{
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(1090)
 contt <- evtree(contraceptive_method_used ~ . , data = ContraceptiveChoice) 
 contt

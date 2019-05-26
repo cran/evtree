@@ -43,6 +43,7 @@ data("StatlogHeart")
 summary(StatlogHeart)
 shw <- array(1, nrow(StatlogHeart))
 shw[StatlogHeart$heart_disease == "presence"] <- 5
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(1090)
 sht <- evtree(heart_disease ~ . , data = StatlogHeart, weights = shw) 
 sht

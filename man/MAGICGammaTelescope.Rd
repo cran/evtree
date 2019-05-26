@@ -64,6 +64,7 @@ J. Dvorak, P. Savicky (2007). Softening Splits in Decision Trees Using Simulated
 data("MAGICGammaTelescope")
 summary(MAGICGammaTelescope)
 \dontrun{
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(1090)
 mgtt <- evtree(class ~ . , data = MAGICGammaTelescope) 
 mgtt

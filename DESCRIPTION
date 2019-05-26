@@ -1,7 +1,7 @@
 Package: evtree
 Title: Evolutionary Learning of Globally Optimal Trees
-Version: 1.0-7
-Date: 2018-05-22
+Version: 1.0-8
+Date: 2019-05-19
 Authors@R: c(person(given = "Thomas", family = "Grubinger", role = c("aut", "cre"), email = "ThomasGrubinger@gmail.com"),
              person(given = "Achim", family = "Zeileis", role = "aut", email = "Achim.Zeileis@R-project.org",
                     comment = c(ORCID = "0000-0003-0918-3766")),
@@ -16,19 +16,19 @@ Description: Commonly used classification and regression tree methods like the C
 	     regression trees in R. CPU and memory-intensive tasks are fully computed in C++ while
 	     the 'partykit' package is leveraged to represent the resulting trees in R, providing
 	     unified infrastructure for summaries, visualizations, and predictions.
-Depends: R (>= 3.1.0), partykit
+Depends: R (>= 3.3.0), partykit
 Suggests: Formula, kernlab, lattice, mlbench, multcomp, party, rpart,
         xtable
 LazyData: yes
 License: GPL-2 | GPL-3
 Author: Thomas Grubinger [aut, cre],
-  Achim Zeileis [aut] (<https://orcid.org/0000-0003-0918-3766>>),
+  Achim Zeileis [aut] (<https://orcid.org/0000-0003-0918-3766>),
   Karl-Peter Pfeiffer [aut]
 Maintainer: Thomas Grubinger <ThomasGrubinger@gmail.com>
 Repository: CRAN
 Repository/R-Forge/Project: partykit
-Repository/R-Forge/Revision: 2173
-Repository/R-Forge/DateTimeStamp: 2018-05-22 14:59:45
-Date/Publication: 2018-05-23 07:08:15 UTC
+Repository/R-Forge/Revision: 2594
+Repository/R-Forge/DateTimeStamp: 2019-05-26 18:21:12
+Date/Publication: 2019-05-26 19:40:04 UTC
 NeedsCompilation: yes
-Packaged: 2018-05-22 15:16:17 UTC; rforge
+Packaged: 2019-05-26 18:33:33 UTC; rforge

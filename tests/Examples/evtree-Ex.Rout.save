@@ -42,6 +42,7 @@ Loading required package: mvtnorm
 > ##D ## data, packages, random seed
 > ##D data("BBBClub", package = "evtree")
 > ##D library("rpart")
+> ##D suppressWarnings(RNGversion("3.5.0"))
 > ##D set.seed(1090)
 > ##D 
 > ##D ## learn trees
@@ -112,6 +113,7 @@ Loading required package: mvtnorm
                                                                    
                                                                    
 > ## Not run: 
+> ##D suppressWarnings(RNGversion("3.5.0"))
 > ##D set.seed(1090)
 > ##D contt <- evtree(contraceptive_method_used ~ . , data = ContraceptiveChoice) 
 > ##D contt
@@ -211,6 +213,7 @@ Loading required package: mvtnorm
 > ## Not run: 
 > ##D gcw <- array(1, nrow(GermanCredit))
 > ##D gcw[GermanCredit$credit_risk == "bad"] <- 5
+> ##D suppressWarnings(RNGversion("3.5.0"))
 > ##D set.seed(1090)
 > ##D gct <- evtree(credit_risk ~ . , data = GermanCredit, weights = gcw) 
 > ##D gct
@@ -257,6 +260,7 @@ Loading required package: mvtnorm
  3rd Qu.:45.884   3rd Qu.:240.564                 
  Max.   :90.000   Max.   :495.561                 
 > ## Not run: 
+> ##D suppressWarnings(RNGversion("3.5.0"))
 > ##D set.seed(1090)
 > ##D mgtt <- evtree(class ~ . , data = MAGICGammaTelescope) 
 > ##D mgtt
@@ -311,6 +315,7 @@ Loading required package: mvtnorm
  Max.   :3.0000                                         
 > shw <- array(1, nrow(StatlogHeart))
 > shw[StatlogHeart$heart_disease == "presence"] <- 5
+> suppressWarnings(RNGversion("3.5.0"))
 > set.seed(1090)
 > sht <- evtree(heart_disease ~ . , data = StatlogHeart, weights = shw) 
 > sht
@@ -361,6 +366,7 @@ Number of terminal nodes: 7
 > ### ** Examples
 > 
 > ## regression
+> suppressWarnings(RNGversion("3.5.0"))
 > set.seed(1090)
 > airq <- subset(airquality, !is.na(Ozone) & complete.cases(airquality))
 > ev_air <- evtree(Ozone ~ ., data = airq)

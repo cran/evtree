@@ -54,6 +54,7 @@ A data frame containing 1,300 observations on 11 variables.
 ## data, packages, random seed
 data("BBBClub", package = "evtree")
 library("rpart")
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(1090)
 
 ## learn trees

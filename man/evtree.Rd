@@ -61,6 +61,7 @@ Grubinger T, Zeileis A, Pfeiffer KP (2014).
 
 \examples{
 ## regression
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(1090)
 airq <- subset(airquality, !is.na(Ozone) & complete.cases(airquality))
 ev_air <- evtree(Ozone ~ ., data = airq)

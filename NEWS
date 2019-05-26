@@ -1,3 +1,8 @@
+Changes in Version 1.0-8
+
+  o Updated reference output (due to changes in the random sample() generation in 3.6.0)
+
+
 Changes in Version 1.0-7
 
   o Updated contact information.

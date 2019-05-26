@@ -4,6 +4,7 @@
 ### code chunk number 1: setup
 ###################################################
 options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
+suppressWarnings(RNGversion("3.5.2"))
 library("rpart")
 library("evtree")
 library("lattice")
